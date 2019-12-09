@@ -25,23 +25,25 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> 
     private int year;
     private int month;
 
-    public DiaryAdapter(RealmResults<DiaryData> list, Activity context) {
+    public DiaryAdapter(RealmResults<DiaryData> list) {
         mlist = list;
+        //렐름 인스턴스 불러오기
         realm = Realm.getDefaultInstance();
-
-
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //커스텀 레이아웃을 각 아이템 뷰에 붙여줌
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
+        //RealmResults 타입의 데이터를 List 타입으로 타입캐스팅
         con_list.addAll(realm.copyFromRealm(mlist));
         return new DiaryAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        //순서대로 항목을 불러와서 각 항목 레이아웃에 설정해줌
         DiaryData temp = con_list.get(position);
         holder.date.setText(temp.getDate());
         holder.content.setText(temp.getContent());
