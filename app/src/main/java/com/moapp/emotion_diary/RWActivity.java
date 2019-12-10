@@ -34,7 +34,7 @@ public class RWActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         // 오늘 연,월,일 불러옴
         int today_year = calendar.get(Calendar.YEAR);
-        int today_month = calendar.get((Calendar.MONTH)+1);
+        int today_month = calendar.get(Calendar.MONTH) + 1;
         int today_date = calendar.get(Calendar.DATE);
         realm = Realm.getDefaultInstance();
         //인텐트 불러옴
@@ -52,7 +52,7 @@ public class RWActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //연월일이 표시되어야 하는데 잘 작동하지 않는 것 같음.
-        textView.setText(mYear + "년 " + mMonth + "월 " + mDate + "일");
+
 
     }
 
@@ -67,6 +67,7 @@ public class RWActivity extends AppCompatActivity {
         diaryData.setMonth(Integer.parseInt(mMonth));
         realm.copyToRealm(diaryData);
         realm.commitTransaction();
+        finish();
     }
 
     public void clickDatePicker(View view) {
@@ -84,6 +85,7 @@ public class RWActivity extends AppCompatActivity {
             mYear = Integer.toString(year);
             mMonth = Integer.toString(month);
             mDate = Integer.toString(dayOfMonth);
+            textView.setText(year + "년 " + (month + 1) + "월 " + dayOfMonth + "일");
         }
     };
 

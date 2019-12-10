@@ -5,20 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:onClick="clickDatePickerMain">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/year"/>
+        android:id="@+id/year"
+        android:gravity="center_horizontal"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/month"/>
+        android:id="@+id/month"
+        android:gravity="center_horizontal"/>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"/>
+        android:layout_weight="3"
+        android:background="#8BC34A"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/diaryList"

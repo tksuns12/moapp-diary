@@ -16,23 +16,32 @@
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="650dp"
-        android:id="@+id/content_view"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/content_view" />
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="저장"
-        android:id="@+id/save_button"
-        android:visibility="visible"
-        android:onClick="clickSave"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="삭제"
-        android:id="@+id/delete_button"
-        android:visibility="visible"
-        android:onClick="clickDelete"/>
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="저장"
+            android:id="@+id/save_button"
+            android:visibility="visible"
+            android:onClick="clickSave"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="삭제"
+            android:id="@+id/delete_button"
+            android:visibility="visible"
+            android:onClick="clickDelete"/>
+
+    </LinearLayout>
+
+
 
 
 </LinearLayout>
