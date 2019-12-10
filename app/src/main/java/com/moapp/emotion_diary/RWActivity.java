@@ -39,6 +39,8 @@ public class RWActivity extends AppCompatActivity {
         mYear = Integer.toString(intent.getIntExtra("year", today_year));
         mMonth = Integer.toString(intent.getIntExtra("month", today_month));
         mDate = Integer.toString(intent.getIntExtra("date", today_date));
+        editText = findViewById(R.id.content_view);
+        editText.setText(intent.getStringExtra("content"));
         //연월일이 표시되어야 하는데 잘 작동하지 않는 것 같음.
         textView.setText(mYear + "년 " + mMonth + "월 " + mDate + "일");
 
@@ -58,11 +60,18 @@ public class RWActivity extends AppCompatActivity {
         realm.executeTransaction(new Realm.Transaction(){
             @Override
             public void execute(Realm realm) {
+                if(realm.where(DiaryData.class)
+                        .equalTo("uniqueKey", Integer.parseInt(mYear+mMonth+mDate)).findAll() == null){
                 DiaryData diaryData = realm.createObject(DiaryData.class, Integer.parseInt(mYear + mMonth + mDate));
                 diaryData.setContent(editText.getText().toString());
                 diaryData.setDate(Integer.parseInt(mDate));
                 diaryData.setYear(Integer.parseInt(mYear));
                 diaryData.setMonth(Integer.parseInt(mMonth));
+            } else{
+                    DiaryData result = realm.where(DiaryData.class)
+                            .equalTo("uniqueKey", Integer.parseInt(mYear+mMonth+mDate)).findFirst();
+                    result.setContent(editText.getText().toString());
+                }
             }
         });
         finish();
