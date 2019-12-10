@@ -1,7 +1,5 @@
 package com.moapp.emotion_diary;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.icu.util.Calendar;
@@ -10,12 +8,10 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import androidx.appcompat.app.AppCompatActivity;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class RWActivity extends AppCompatActivity {
 
@@ -59,14 +55,16 @@ public class RWActivity extends AppCompatActivity {
     public void clickSave(View view) {
         editText = findViewById(R.id.content_view);
         //저장 버튼 누를 시 새로운 DiaryData 타입의 데이터를 만든 후 연월일, 일기 내용 설정 후 데이터베이스에 저장
-        realm.beginTransaction();
-        DiaryData diaryData = realm.createObject(DiaryData.class, Integer.parseInt(mYear + mMonth + mDate));
-        diaryData.setContent(editText.getText().toString());
-        diaryData.setDate(Integer.parseInt(mDate));
-        diaryData.setYear(Integer.parseInt(mYear));
-        diaryData.setMonth(Integer.parseInt(mMonth));
-        realm.copyToRealm(diaryData);
-        realm.commitTransaction();
+        realm.executeTransaction(new Realm.Transaction(){
+            @Override
+            public void execute(Realm realm) {
+                DiaryData diaryData = realm.createObject(DiaryData.class, Integer.parseInt(mYear + mMonth + mDate));
+                diaryData.setContent(editText.getText().toString());
+                diaryData.setDate(Integer.parseInt(mDate));
+                diaryData.setYear(Integer.parseInt(mYear));
+                diaryData.setMonth(Integer.parseInt(mMonth));
+            }
+        });
         finish();
     }
 
@@ -83,7 +81,7 @@ public class RWActivity extends AppCompatActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             mYear = Integer.toString(year);
-            mMonth = Integer.toString(month);
+            mMonth = Integer.toString(month + 1);
             mDate = Integer.toString(dayOfMonth);
             textView.setText(year + "년 " + (month + 1) + "월 " + dayOfMonth + "일");
         }

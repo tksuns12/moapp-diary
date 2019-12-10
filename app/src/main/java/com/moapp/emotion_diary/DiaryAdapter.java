@@ -1,6 +1,5 @@
 package com.moapp.emotion_diary;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +8,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +26,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> 
         mlist = list;
         //렐름 인스턴스 불러오기
         realm = Realm.getDefaultInstance();
+        con_list.addAll(realm.copyFromRealm(mlist));
     }
 
     @NonNull
@@ -37,7 +35,6 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> 
         //커스텀 레이아웃을 각 아이템 뷰에 붙여줌
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
         //RealmResults 타입의 데이터를 List 타입으로 타입캐스팅
-        con_list.addAll(realm.copyFromRealm(mlist));
         return new DiaryAdapter.ViewHolder(view);
     }
 
@@ -45,7 +42,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         //순서대로 항목을 불러와서 각 항목 레이아웃에 설정해줌
         DiaryData temp = con_list.get(position);
-        holder.date.setText(temp.getDate());
+        holder.date.setText(Integer.toString(temp.getDate()));
         holder.content.setText(temp.getContent());
     }
 
@@ -60,13 +57,10 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            TextView year_show = itemView.findViewById(R.id.year);
-            TextView month_show = itemView.findViewById(R.id.month);
-            year = Integer.parseInt(year_show.getText().toString());
-            month = Integer.parseInt(month_show.getText().toString());
-
             date = itemView.findViewById(R.id.date);
             content = itemView.findViewById(R.id.content);
+            year = con_list.get(0).getYear();
+            month = con_list.get(0).getMonth();
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
