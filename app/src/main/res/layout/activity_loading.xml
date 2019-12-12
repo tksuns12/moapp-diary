@@ -4,12 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoadingActivity">
+    tools:context=".LoadingActivity"
+    android:id="@+id/loadingActivity"
+    android:keepScreenOn="true">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="로딩 중입니다. 여기에 우리 초기화면 넣어주세요."/>
+        android:text="로딩 중입니다. 여기에 우리 초기화면 넣어주세요."
+        android:id="@+id/loadingText"/>
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        app:layout_constraintTop_toTopOf="@+id/loadingText"
+        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_marginTop="300dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

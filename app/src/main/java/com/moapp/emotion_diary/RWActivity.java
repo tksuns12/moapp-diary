@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.realm.Realm;
 
 public class RWActivity extends AppCompatActivity {
@@ -56,24 +59,26 @@ public class RWActivity extends AppCompatActivity {
 
     public void clickSave(View view) {
         editText = findViewById(R.id.content_view);
+        String content = editText.getText().toString();
         //저장 버튼 누를 시 새로운 DiaryData 타입의 데이터를 만든 후 연월일, 일기 내용 설정 후 데이터베이스에 저장
-        realm.executeTransaction(new Realm.Transaction(){
-            @Override
-            public void execute(Realm realm) {
-                if(realm.where(DiaryData.class)
-                        .equalTo("uniqueKey", Integer.parseInt(mYear+mMonth+mDate)).findAll() == null){
-                DiaryData diaryData = realm.createObject(DiaryData.class, Integer.parseInt(mYear + mMonth + mDate));
-                diaryData.setContent(editText.getText().toString());
-                diaryData.setDate(Integer.parseInt(mDate));
-                diaryData.setYear(Integer.parseInt(mYear));
-                diaryData.setMonth(Integer.parseInt(mMonth));
-            } else{
-                    DiaryData result = realm.where(DiaryData.class)
-                            .equalTo("uniqueKey", Integer.parseInt(mYear+mMonth+mDate)).findFirst();
-                    result.setContent(editText.getText().toString());
-                }
-            }
-        });
+        if(realm.where(DiaryData.class)
+                .equalTo("uniqueKey", Integer.parseInt(mYear+mMonth+mDate)).findAll().size() == 0){
+            realm.beginTransaction();
+            DiaryData diaryData = realm.createObject(DiaryData.class, Integer.parseInt(mYear + mMonth + mDate));
+            diaryData.setContent(editText.getText().toString());
+            diaryData.setDate(Integer.parseInt(mDate));
+            diaryData.setYear(Integer.parseInt(mYear));
+            diaryData.setMonth(Integer.parseInt(mMonth));
+            diaryData.setEmotion(scoreEmotion(editText.getText().toString()));
+            realm.commitTransaction();
+        } else{
+            realm.beginTransaction();
+            DiaryData result = realm.where(DiaryData.class)
+                    .equalTo("uniqueKey", Integer.parseInt(mYear+mMonth+mDate)).findFirst();
+            result.setContent(editText.getText().toString());
+            result.setEmotion(scoreEmotion(editText.getText().toString()));
+            realm.commitTransaction();
+        }
         finish();
     }
 
@@ -96,12 +101,62 @@ public class RWActivity extends AppCompatActivity {
         }
     };
 
+    //감정 점수를 매기는 함수
+    private int scoreEmotion(String data) {
+        int emotion_count = 0;
+        int total_word = 0;
+        String[] split = data.split(" ");
+        List<String> onegram = new ArrayList<>();
+        List<String> twogram = new ArrayList<>();
+        List<String> threegram = new ArrayList<>();
+        for (int i = 0; i < split.length; i++) {
+            onegram.add(split[i].replace(".", ""));
+            total_word++;
+            if (i+1 == split.length) {
+                continue;
+            }
+            twogram.add(split[i].replace(".", "") + " "
+                    + split[i+1].replace(".", ""));
+            total_word++;
+            if (i+2 == split.length) {
+                continue;
+            }
+            threegram.add(split[i].replace(".", "") + " "
+                    + split[i+1].replace(".", "") + " "
+            + split[i+2].replace(".", ""));
+            total_word++;
+        }
+        for (String one : onegram) {
+            SentiDict result = realm.where(SentiDict.class).equalTo("word", one).findFirst();
+            if (result != null) {
+                emotion_count += result.getScore();
+            }
+        }
+
+        for (String two : twogram) {
+            SentiDict result = realm.where(SentiDict.class).equalTo("word", two).findFirst();
+            if (result != null) {
+                emotion_count += result.getScore();
+            }
+        }
+
+        for (String three : threegram) {
+            SentiDict result = realm.where(SentiDict.class).equalTo("word", three).findFirst();
+            if (result != null) {
+                emotion_count += result.getScore();
+            }
+        }
+
+        return emotion_count / total_word;
+    }
+
     //삭제 버튼 누를 시 오늘 연월일에 해당하는 일기를 찾은 뒤 데이터베이스에서 삭제
     public void clickDelete(View view) {
+        realm.beginTransaction();
         DiaryData data = realm.where(DiaryData.class).equalTo("uniqueKey",
                 Integer.parseInt(mYear+mMonth+mDate)).findFirst();
-        realm.beginTransaction();
         data.deleteFromRealm();
         realm.commitTransaction();
+        finish();
     }
 }

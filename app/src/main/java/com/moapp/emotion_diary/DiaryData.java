@@ -3,11 +3,15 @@ package com.moapp.emotion_diary;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
+//일기 데이터를 저장하는 클래스
+
 public class DiaryData extends RealmObject {
     private String content;
     private int month;
     private int date;
     private int year;
+    private int emotion;
+
     @PrimaryKey
     private int uniqueKey;
 
@@ -47,7 +51,13 @@ public class DiaryData extends RealmObject {
         return uniqueKey;
     }
 
-    public void setUniqueKey(int uniqueKey) {
-        this.uniqueKey = uniqueKey;
+
+    public int getEmotion() {
+        return emotion;
     }
+
+    public void setEmotion(int emotion) {
+        this.emotion = emotion;
+    }
+
 }

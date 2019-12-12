@@ -3,6 +3,8 @@ package com.moapp.emotion_diary;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
+//감성 사전 데이터베이스
+
 public class SentiDict extends RealmObject {
 
     private int score;

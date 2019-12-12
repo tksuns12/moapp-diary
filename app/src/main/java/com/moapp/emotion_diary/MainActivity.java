@@ -33,7 +33,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //데이터 베이스 초기화, Realm은 앱 시작할 때 초기화를 반드시 해주어야 함.
+        Realm.init(this);
+        //MainActivity 레이아웃 뷰 설정 전에 로딩 화면을 띄움
+        Intent intent = new Intent(this, LoadingActivity.class);
+        startActivity(intent);
         setContentView(R.layout.activity_main);
+
         Calendar calendar = Calendar.getInstance(); // 오늘 날짜 가져오기 위해 캘린더 인스턴스 생성
         today_year = calendar.get(Calendar.YEAR); // 오늘 연도 가져오기
         today_month = calendar.get(Calendar.MONTH) + 1; //오늘 월 가져오기
@@ -57,8 +63,6 @@ public class MainActivity extends AppCompatActivity {
         });
         //리사이클러뷰 할당
         recyclerView = findViewById(R.id.diaryList);
-        //데이터베이스 초기화
-        Realm.init(this);
         //데이터베이스 인스턴스 가져오기
         realm = Realm.getDefaultInstance();
         //탐색 결과 초기화
@@ -84,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         realm.close();
     }
 
+    //저장 버튼이나 삭제 버튼을 누르고 다시 MainActivity로 돌아왔을 때 할 동작 설정
     @Override
     protected void onResume() {
         super.onResume();
@@ -116,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    //MainActivity 상단에 연,월을 클릭하는 동작을 감지하는 리스너 설정
     private DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
