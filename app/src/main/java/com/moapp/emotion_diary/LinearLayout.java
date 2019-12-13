@@ -26,7 +26,6 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 
 
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -35,6 +34,7 @@ public class LinearLayout extends Fragment  {
     public LinearLayout() {
         // Required empty public constructor
     }
+    private DiaryData diaryData;
     private LineChart lineChart ;
     final String [] mDays = {"","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24",
             "25","26","27","28","29","30","31"};
@@ -53,28 +53,32 @@ public class LinearLayout extends Fragment  {
 
         TextView textView = (TextView) getActivity().findViewById(R.id.month); //getActivity 읽어오기
 
+
         ArrayList<Entry> entries = new ArrayList<>();//x축 데이터
-        entries.add(new Entry(1, 1));  //좌표값 x축 일 y축 기분점수
+        entries.add(new Entry(1, 2));  //좌표값 x축 날짜 y축 기분점수
         entries.add(new Entry(2, 3));
-        entries.add(new Entry(3, 2));
-        entries.add(new Entry(4, 5));
-        entries.add(new Entry(5, 3));
+        entries.add(new Entry(3, 1));
+        entries.add(new Entry(4, 2));
+        entries.add(new Entry(5, 6));
         entries.add(new Entry(6, 8));
-        entries.add(new Entry(7, 8));
 
 
+//       for(int i=1; i<6;i++) {
+//           entries.add(new Entry(i, 2*i));  //좌표값 x축 날짜 y축 기분점수
+//       };
 
         LineDataSet lineDataSet = new LineDataSet(entries, "기분점수"); //속성
         lineDataSet.setLineWidth(2);
         lineDataSet.setCircleRadius(4);
-        lineDataSet.setCircleColor(Color.BLUE);
-        lineDataSet.setColor(Color.parseColor("#FFA1B4DC"));
+        lineDataSet.setCircleColor(Color.BLUE);  //데이터 원 색상
+        lineDataSet.setColor(Color.parseColor("#A42196F3")); //데이터 선 색상
         lineDataSet.setDrawCircleHole(false);
-        lineDataSet.setDrawCircles(true);
+        lineDataSet.setDrawCircles(false);
         lineDataSet.setDrawHorizontalHighlightIndicator(true);
         lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER); //선 둥글게 표시
         lineDataSet.setDrawHighlightIndicators(false);
         lineDataSet.setDrawValues(true);
+        lineDataSet.setDrawFilled(true); //그래프 밑 부분 채우기 유무
 
         LineData lineData = new LineData();
         lineData.addDataSet(lineDataSet);

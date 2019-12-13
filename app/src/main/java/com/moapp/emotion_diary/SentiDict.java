@@ -20,6 +20,7 @@ public class SentiDict extends RealmObject {
 
     public void setWord(String word) {
         this.word = word;
+
     }
 
     public int getScore() {
