@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private Realm realm;
     private RecyclerView recyclerView;
     DiaryAdapter adapter;
-    private LineChart lineChart ;
+    private LineChart lineChart;
     final String [] mDays = {"","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24",
             "25","26","27","28","29","30","31"};
 
@@ -129,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(recyclerView);
         //리사이클러뷰에 어댑터 설정
         recyclerView.setAdapter(adapter);
-        realm = Realm.getDefaultInstance();
 
 
         //그래프 그리기 시작 -----------------------------------------------------
