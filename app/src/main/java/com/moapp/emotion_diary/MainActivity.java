@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Realm.init(this);
         setContentView(R.layout.activity_main);
 
         //데이터 베이스 초기화, Realm은 앱 시작할 때 초기화를 반드시 해주어야 함.
