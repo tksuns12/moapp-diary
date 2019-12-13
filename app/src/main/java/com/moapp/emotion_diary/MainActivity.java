@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         setContentView(R.layout.activity_main);
 
+
         Calendar calendar = Calendar.getInstance(); // 오늘 날짜 가져오기 위해 캘린더 인스턴스 생성
         today_year = calendar.get(Calendar.YEAR); // 오늘 연도 가져오기
         today_month = calendar.get(Calendar.MONTH) + 1; //오늘 월 가져오기

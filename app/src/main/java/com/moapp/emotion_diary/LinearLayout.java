@@ -1,6 +1,7 @@
 package com.moapp.emotion_diary;
 
 
+import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.icu.util.Calendar;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.Easing;
@@ -24,6 +26,9 @@ import com.github.mikephil.charting.data.LineDataSet;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 
 /**
@@ -39,10 +44,17 @@ public class LinearLayout extends Fragment  {
     final String [] mDays = {"","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24",
             "25","26","27","28","29","30","31"};
 
-    //x축 날짜 표시
+    String year_show;
+    String month_show;
+
+    private Realm realm;
+    private int year;
+    private int month;
+        //x축 날짜 표시
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -51,7 +63,15 @@ public class LinearLayout extends Fragment  {
         View view =inflater.inflate(R.layout.fragment_linear_layout,container,false);
         lineChart = (LineChart) view.findViewById(R.id.chart);
 
-        TextView textView = (TextView) getActivity().findViewById(R.id.month); //getActivity 읽어오기
+
+        TextView month_show = (TextView) getActivity().findViewById(R.id.month);//getActivity 읽어오기
+        TextView year_show = (TextView) getActivity().findViewById(R.id.year);
+
+
+//        Realm realm = Realm.getDefaultInstance();
+//        RealmResults<DiaryData> results;
+//
+//        realm.equals("year",year).equalTo("month", 월).findAll().sort("date", Sort.ASCENDING);
 
 
         ArrayList<Entry> entries = new ArrayList<>();//x축 데이터
@@ -61,7 +81,6 @@ public class LinearLayout extends Fragment  {
         entries.add(new Entry(4, 2));
         entries.add(new Entry(5, 6));
         entries.add(new Entry(6, 8));
-
 
 //       for(int i=1; i<6;i++) {
 //           entries.add(new Entry(i, 2*i));  //좌표값 x축 날짜 y축 기분점수

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class RWActivity extends AppCompatActivity {
 
@@ -24,6 +25,7 @@ public class RWActivity extends AppCompatActivity {
     private String mMonth;
     private String mDate;
     private EditText editText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +103,7 @@ public class RWActivity extends AppCompatActivity {
         }
     };
 
+
     //감정 점수를 매기는 함수
     private int scoreEmotion(String data) {
         int emotion_count = 0;
@@ -147,7 +150,7 @@ public class RWActivity extends AppCompatActivity {
             }
         }
 
-        return emotion_count / total_word;
+        return emotion_count /total_word;
     }
 
     //삭제 버튼 누를 시 오늘 연월일에 해당하는 일기를 찾은 뒤 데이터베이스에서 삭제
