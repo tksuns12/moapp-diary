@@ -149,7 +149,7 @@ public class RWActivity extends AppCompatActivity {
             }
         }
 
-        return emotion_count /total_word;
+        return emotion_count * 10 /total_word;
     }
 
     //삭제 버튼 누를 시 오늘 연월일에 해당하는 일기를 찾은 뒤 데이터베이스에서 삭제

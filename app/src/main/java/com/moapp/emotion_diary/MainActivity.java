@@ -28,6 +28,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -51,13 +52,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Realm.init(this);
-        setContentView(R.layout.activity_main);
-
-
         //데이터 베이스 초기화, Realm은 앱 시작할 때 초기화를 반드시 해주어야 함.
         //MainActivity 레이아웃 뷰 설정 전에 로딩 화면을 띄움
         Intent intent = new Intent(this, LoadingActivity.class);
         startActivity(intent);
+        setContentView(R.layout.activity_main);
+
+
+
 
 
 
@@ -132,66 +134,7 @@ public class MainActivity extends AppCompatActivity {
         //리사이클러뷰에 어댑터 설정
         recyclerView.setAdapter(adapter);
 
-
-        //그래프 그리기 시작 -----------------------------------------------------
-        lineChart = findViewById(R.id.chart);
-
-
-        ArrayList<Entry> entries = new ArrayList<>();//x축 데이터
-        entries.add(new Entry(1, 2));  //좌표값 x축 날짜 y축 기분점수
-        entries.add(new Entry(2, 3));
-        entries.add(new Entry(3, 1));
-        entries.add(new Entry(4, 2));
-        entries.add(new Entry(5, 6));
-        entries.add(new Entry(6, 8));
-
-//       for(int i=1; i<6;i++) {
-//           entries.add(new Entry(i, 2*i));  //좌표값 x축 날짜 y축 기분점수
-//       };
-
-        LineDataSet lineDataSet = new LineDataSet(entries, "기분점수"); //속성
-        lineDataSet.setLineWidth(2);
-        lineDataSet.setCircleRadius(4);
-        lineDataSet.setCircleColor(Color.BLUE);  //데이터 원 색상
-        lineDataSet.setColor(Color.parseColor("#A42196F3")); //데이터 선 색상
-        lineDataSet.setDrawCircleHole(false);
-        lineDataSet.setDrawCircles(false);
-        lineDataSet.setDrawHorizontalHighlightIndicator(true);
-        lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER); //선 둥글게 표시
-        lineDataSet.setDrawHighlightIndicators(false);
-        lineDataSet.setDrawValues(true);
-        lineDataSet.setDrawFilled(true); //그래프 밑 부분 채우기 유무
-
-        LineData lineData = new LineData();
-        lineData.addDataSet(lineDataSet);
-        lineChart.setData(lineData);
-        XAxis xAxis = lineChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
-        xAxis.setValueFormatter(new GraphAxisValueFormatter(mDays));// x축 설명
-        xAxis.setTextColor(Color.BLACK);
-        xAxis.enableGridDashedLine(10, 24, 0);
-        xAxis.setDrawLabels(true);
-        xAxis.setGranularity(1.0f);
-
-
-        YAxis yLAxis = lineChart.getAxisLeft();
-        yLAxis.setTextColor(Color.BLACK);
-
-        YAxis yRAxis = lineChart.getAxisRight();
-        yRAxis.setDrawLabels(false);
-        yRAxis.setDrawAxisLine(false);
-        yRAxis.setDrawGridLines(false);
-
-        Description description = new Description();
-        description.setText("");
-
-        lineChart.setDoubleTapToZoomEnabled(false);
-        lineChart.setDrawGridBackground(false);
-        lineChart.setDescription(description);
-        lineChart.animateY(2000);
-        lineChart.invalidate();
-        //그래프 끝 -----------------------------------------------------------------
+        setChart(results);
     }
 
     @Override
@@ -218,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         DiaryAdapter adapter = new DiaryAdapter(results);
         //리사이클러뷰에 어댑터 선정
         recyclerView.setAdapter(adapter);
-
+        setChart(results);
     }
 
     public void clickDatePickerMain(View view) {
@@ -257,4 +200,69 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.setAdapter(adapter);
         }
     };
+
+    private void setChart(List<DiaryData> data) {
+        LineChart lineChart = findViewById(R.id.chart);
+        lineChart.invalidate();
+        lineChart.clear();
+
+        List<DiaryData> contentlist = new ArrayList<>();
+        contentlist.addAll(realm.copyFromRealm(data));
+        ArrayList<Entry> values = new ArrayList<>();
+        if (contentlist.size() != 0) {
+            for (int day = 1, i = 0; day < 32; day++) {
+                if (i == contentlist.size()) {
+                    break;
+                }
+                if (contentlist.get(i).getDate() == day) {
+                    values.add(new Entry(day, contentlist.get(i).getEmotion()));
+                    i++;
+                } else {
+                    values.add(new Entry(day, 0));
+                }
+            }
+    }
+
+        LineDataSet lineDataSet = new LineDataSet(values, "기분 점수");
+        lineDataSet.setLineWidth(2);
+        lineDataSet.setCircleRadius(4);
+        lineDataSet.setCircleColor(Color.BLUE);  //데이터 원 색상
+        lineDataSet.setColor(Color.parseColor("#A42196F3")); //데이터 선 색상
+        lineDataSet.setDrawCircleHole(false);
+        lineDataSet.setDrawCircles(false);
+        lineDataSet.setDrawHorizontalHighlightIndicator(true);
+        lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER); //선 둥글게 표시
+        lineDataSet.setDrawHighlightIndicators(false);
+        lineDataSet.setDrawValues(true);
+        lineDataSet.setDrawFilled(true); //그래프 밑 부분 채우기 유무
+
+        LineData lineData = new LineData();
+        lineData.addDataSet(lineDataSet);
+
+        lineChart.setData(lineData);
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        xAxis.setTextColor(Color.BLACK);
+        xAxis.enableGridDashedLine(10, 24, 0);
+        xAxis.setDrawLabels(true);
+        xAxis.setGranularity(1.0f);
+
+        YAxis yLAxis = lineChart.getAxisLeft();
+        yLAxis.setTextColor(Color.BLACK);
+
+        YAxis yRAxis = lineChart.getAxisRight();
+        yRAxis.setDrawLabels(false);
+        yRAxis.setDrawAxisLine(false);
+        yRAxis.setDrawGridLines(false);
+
+        Description description = new Description();
+        description.setText("");
+
+        lineChart.setDoubleTapToZoomEnabled(false);
+        lineChart.setDrawGridBackground(false);
+        lineChart.setDescription(description);
+        lineChart.animateY(2000);
+
+}
 }
