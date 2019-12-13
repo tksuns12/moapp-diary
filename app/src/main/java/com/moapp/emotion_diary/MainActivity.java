@@ -17,8 +17,17 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -34,16 +43,20 @@ public class MainActivity extends AppCompatActivity {
     private Realm realm;
     private RecyclerView recyclerView;
     DiaryAdapter adapter;
+    private LineChart lineChart ;
+    final String [] mDays = {"","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24",
+            "25","26","27","28","29","30","31"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
         //데이터 베이스 초기화, Realm은 앱 시작할 때 초기화를 반드시 해주어야 함.
-        Realm.init(this);
         //MainActivity 레이아웃 뷰 설정 전에 로딩 화면을 띄움
         Intent intent = new Intent(this, LoadingActivity.class);
         startActivity(intent);
-        setContentView(R.layout.activity_main);
+
 
 
         Calendar calendar = Calendar.getInstance(); // 오늘 날짜 가져오기 위해 캘린더 인스턴스 생성
@@ -116,6 +129,68 @@ public class MainActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(recyclerView);
         //리사이클러뷰에 어댑터 설정
         recyclerView.setAdapter(adapter);
+        realm = Realm.getDefaultInstance();
+
+
+        //그래프 그리기 시작 -----------------------------------------------------
+        lineChart = findViewById(R.id.chart);
+
+
+        ArrayList<Entry> entries = new ArrayList<>();//x축 데이터
+        entries.add(new Entry(1, 2));  //좌표값 x축 날짜 y축 기분점수
+        entries.add(new Entry(2, 3));
+        entries.add(new Entry(3, 1));
+        entries.add(new Entry(4, 2));
+        entries.add(new Entry(5, 6));
+        entries.add(new Entry(6, 8));
+
+//       for(int i=1; i<6;i++) {
+//           entries.add(new Entry(i, 2*i));  //좌표값 x축 날짜 y축 기분점수
+//       };
+
+        LineDataSet lineDataSet = new LineDataSet(entries, "기분점수"); //속성
+        lineDataSet.setLineWidth(2);
+        lineDataSet.setCircleRadius(4);
+        lineDataSet.setCircleColor(Color.BLUE);  //데이터 원 색상
+        lineDataSet.setColor(Color.parseColor("#A42196F3")); //데이터 선 색상
+        lineDataSet.setDrawCircleHole(false);
+        lineDataSet.setDrawCircles(false);
+        lineDataSet.setDrawHorizontalHighlightIndicator(true);
+        lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER); //선 둥글게 표시
+        lineDataSet.setDrawHighlightIndicators(false);
+        lineDataSet.setDrawValues(true);
+        lineDataSet.setDrawFilled(true); //그래프 밑 부분 채우기 유무
+
+        LineData lineData = new LineData();
+        lineData.addDataSet(lineDataSet);
+        lineChart.setData(lineData);
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        xAxis.setValueFormatter(new GraphAxisValueFormatter(mDays));// x축 설명
+        xAxis.setTextColor(Color.BLACK);
+        xAxis.enableGridDashedLine(10, 24, 0);
+        xAxis.setDrawLabels(true);
+        xAxis.setGranularity(1.0f);
+
+
+        YAxis yLAxis = lineChart.getAxisLeft();
+        yLAxis.setTextColor(Color.BLACK);
+
+        YAxis yRAxis = lineChart.getAxisRight();
+        yRAxis.setDrawLabels(false);
+        yRAxis.setDrawAxisLine(false);
+        yRAxis.setDrawGridLines(false);
+
+        Description description = new Description();
+        description.setText("");
+
+        lineChart.setDoubleTapToZoomEnabled(false);
+        lineChart.setDrawGridBackground(false);
+        lineChart.setDescription(description);
+        lineChart.animateY(2000);
+        lineChart.invalidate();
+        //그래프 끝 -----------------------------------------------------------------
     }
 
     @Override
