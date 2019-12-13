@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         Realm.init(this);
         setContentView(R.layout.activity_main);
 
+
         //데이터 베이스 초기화, Realm은 앱 시작할 때 초기화를 반드시 해주어야 함.
         //MainActivity 레이아웃 뷰 설정 전에 로딩 화면을 띄움
         Intent intent = new Intent(this, LoadingActivity.class);
