@@ -27,7 +27,7 @@ public class LoadingActivity extends Activity {
     }
 
     //AsyncTask를 상속한 스레드 구현
-    public class InitializeDict extends AsyncTask<Integer, Integer, Integer> {
+    private class InitializeDict extends AsyncTask<Integer, Integer, Integer> {
         ProgressBar progressBar;
         int total;
         int progress;
@@ -101,47 +101,4 @@ public class LoadingActivity extends Activity {
             finish();
         }
     }
-
-//    private void startLoading() {
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (realm.where(SentiDict.class).equalTo("gram", 1).findFirst() != null){
-//                    finish();
-//                } else {
-//                    InputStreamReader is = null;
-//                    try {
-//                        is = new InputStreamReader(getResources().openRawResource(R.raw.dict), "euc-kr");
-//                    } catch (UnsupportedEncodingException e) {
-//                        e.printStackTrace();
-//                    }
-//                    BufferedReader reader = new BufferedReader(is);
-//                    try {
-//                        String line;
-//                        while ((line = reader.readLine()) != null) {
-//                            String[] str = line.split(",");
-//                            realm.beginTransaction();
-//                            SentiDict sentiDict = realm.createObject(SentiDict.class, str[0]);
-//                            sentiDict.setScore(Integer.parseInt(str[1]));
-//                            sentiDict.setGram(str[0].split(" ").length);
-//                            realm.commitTransaction();
-//                        }
-//                    }
-//                    catch (IOException ex) {
-//                        // handle exception
-//                    }
-//                    finally {
-//                        try {
-//                            is.close();
-//                        }
-//                        catch (IOException e) {
-//                            // handle exception
-//                        }
-//                    }
-//                }
-//
-//            }
-//        }, 2000);
-//    }
 }

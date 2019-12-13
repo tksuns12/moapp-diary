@@ -21,6 +21,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> 
     private List<DiaryData> con_list = new ArrayList<>();
     private int year;
     private int month;
+    private DiaryData temp;
 
     public DiaryAdapter(RealmResults<DiaryData> list) {
         mlist = list;
@@ -77,5 +78,26 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> 
                 }
             });
         }
+    }
+
+    public void removeItem(int position) {
+        String rYear = Integer.toString(con_list.get(position).getYear());
+        String rMonth = Integer.toString(con_list.get(position).getMonth());
+        String rDate = Integer.toString(con_list.get(position).getDate());
+        realm.beginTransaction();
+        DiaryData data = realm.where(DiaryData.class).equalTo("uniqueKey",
+                Integer.parseInt(rYear+rMonth+rDate)).findFirst();
+        temp = data;
+        data.deleteFromRealm();
+        realm.commitTransaction();
+        notifyItemRemoved(position);
+    }
+
+    public void restoreItem() {
+        realm.beginTransaction();
+        realm.copyToRealm(temp);
+        realm.commitTransaction();
+        notifyItemInserted(temp.getDate());
+        temp = null;
     }
 }
