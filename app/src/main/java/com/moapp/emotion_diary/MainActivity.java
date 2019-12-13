@@ -4,17 +4,21 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -29,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView month_show;
     private Realm realm;
     private RecyclerView recyclerView;
+    DiaryAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,9 +82,36 @@ public class MainActivity extends AppCompatActivity {
         //리사이클러뷰에 레이아웃 매니저 설정(수직 리니어 레이아웃)
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //DiaryAdapter.java에서 정의해둔 어댑터 인스턴스 생성
-        DiaryAdapter adapter = new DiaryAdapter(results);
+       adapter = new DiaryAdapter(results);
         //리사이클러뷰에 어댑터 선정
         recyclerView.setAdapter(adapter);
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                final int position = viewHolder.getAdapterPosition();
+                adapter.removeItem(position);
+
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.diaryList), "일기가 삭제되었습니다.", Snackbar.LENGTH_LONG);
+                snackbar.setAction("취소", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        adapter.restoreItem();
+                        recyclerView.scrollToPosition(position);
+                    }
+                });
+
+                snackbar.setActionTextColor(Color.CYAN);
+                snackbar.show();
+
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemTouchHelperCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     @Override
