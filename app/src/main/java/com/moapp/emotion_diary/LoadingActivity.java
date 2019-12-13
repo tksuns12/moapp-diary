@@ -21,6 +21,7 @@ public class LoadingActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
+        Realm.init(this);
         //스레드 시작
         InitializeDict initializeDict = new InitializeDict();
         initializeDict.execute(10);
