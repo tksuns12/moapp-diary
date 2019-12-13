@@ -83,8 +83,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //DiaryAdapter.java에서 정의해둔 어댑터 인스턴스 생성
        adapter = new DiaryAdapter(results);
-        //리사이클러뷰에 어댑터 선정
-        recyclerView.setAdapter(adapter);
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -95,12 +93,15 @@ public class MainActivity extends AppCompatActivity {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 final int position = viewHolder.getAdapterPosition();
                 adapter.removeItem(position);
+                adapter.notifyItemRemoved(position);
 
                 Snackbar snackbar = Snackbar.make(findViewById(R.id.diaryList), "일기가 삭제되었습니다.", Snackbar.LENGTH_LONG);
                 snackbar.setAction("취소", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         adapter.restoreItem();
+                        adapter.notifyItemInserted(position);
+                        recyclerView.setAdapter(adapter);
                         recyclerView.scrollToPosition(position);
                     }
                 });
@@ -112,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemTouchHelperCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
+        //리사이클러뷰에 어댑터 설정
+        recyclerView.setAdapter(adapter);
     }
 
     @Override

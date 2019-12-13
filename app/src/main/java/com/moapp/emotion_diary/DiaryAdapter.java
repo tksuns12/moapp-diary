@@ -21,10 +21,11 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> 
     private List<DiaryData> con_list = new ArrayList<>();
     private int year;
     private int month;
-    private DiaryData temp;
-
+    private int[] temp;
+    private String temp_content;
+    private int deleted_position;
     public DiaryAdapter(RealmResults<DiaryData> list) {
-        mlist = list;
+        this.mlist = list;
         //렐름 인스턴스 불러오기
         realm = Realm.getDefaultInstance();
         con_list.addAll(realm.copyFromRealm(mlist));
@@ -80,24 +81,40 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> 
         }
     }
 
-    public void removeItem(int position) {
+    void removeItem(int position) {
+        temp = new int[4];
         String rYear = Integer.toString(con_list.get(position).getYear());
         String rMonth = Integer.toString(con_list.get(position).getMonth());
         String rDate = Integer.toString(con_list.get(position).getDate());
+        int rEmotion = con_list.get(position).getEmotion();
+        temp_content = con_list.get(position).getContent();
+        temp[0] = Integer.parseInt(rYear);
+        temp[1] = Integer.parseInt(rMonth);
+        temp[2] = Integer.parseInt(rDate);
+        temp[3] = rEmotion;
         realm.beginTransaction();
         DiaryData data = realm.where(DiaryData.class).equalTo("uniqueKey",
                 Integer.parseInt(rYear+rMonth+rDate)).findFirst();
-        temp = data;
+
+        deleted_position = position;
         data.deleteFromRealm();
         realm.commitTransaction();
-        notifyItemRemoved(position);
     }
 
-    public void restoreItem() {
+    void restoreItem() {
+        String rYear = Integer.toString(temp[0]);
+        String rMonth = Integer.toString(temp[1]);
+        String rDate = Integer.toString(temp[2]);
         realm.beginTransaction();
-        realm.copyToRealm(temp);
+        DiaryData diaryData = realm.createObject(DiaryData.class, Integer.parseInt(rYear+rMonth+rDate));
+        diaryData.setContent(temp_content);
+        diaryData.setYear(temp[0]);
+        diaryData.setMonth(temp[1]);
+        diaryData.setDate(temp[2]);
+        diaryData.setEmotion(temp[3]);
         realm.commitTransaction();
-        notifyItemInserted(temp.getDate());
         temp = null;
+        temp_content = null;
+        deleted_position = 0;
     }
 }
