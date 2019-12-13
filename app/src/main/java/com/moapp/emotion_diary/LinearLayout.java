@@ -67,6 +67,7 @@ public class LinearLayout extends Fragment  {
         TextView month_show = (TextView) getActivity().findViewById(R.id.month);//getActivity 읽어오기
         TextView year_show = (TextView) getActivity().findViewById(R.id.year);
 
+        Integer month =Integer.parseInt(month_show.getText().toString());
 
 //        Realm realm = Realm.getDefaultInstance();
 //        RealmResults<DiaryData> results;
