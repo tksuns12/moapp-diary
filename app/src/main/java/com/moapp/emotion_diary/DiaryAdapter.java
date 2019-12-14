@@ -99,6 +99,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> 
         deleted_position = position;
         data.deleteFromRealm();
         realm.commitTransaction();
+        notifyItemRemoved(position);
     }
 
     void restoreItem() {
@@ -113,6 +114,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> 
         diaryData.setDate(temp[2]);
         diaryData.setEmotion(temp[3]);
         realm.commitTransaction();
+        notifyItemInserted(deleted_position);
         temp = null;
         temp_content = null;
         deleted_position = 0;

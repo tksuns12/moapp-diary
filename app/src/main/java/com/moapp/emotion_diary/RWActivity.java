@@ -45,7 +45,6 @@ public class RWActivity extends AppCompatActivity {
         mDate = Integer.toString(intent.getIntExtra("date", today_date));
         editText = findViewById(R.id.content_view);
         editText.setText(intent.getStringExtra("content"));
-        //연월일이 표시되어야 하는데 잘 작동하지 않는 것 같음.
         textView.setText(mYear + "년 " + mMonth + "월 " + mDate + "일");
 
     }
@@ -53,7 +52,6 @@ public class RWActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //연월일이 표시되어야 하는데 잘 작동하지 않는 것 같음.
 
 
     }

@@ -111,14 +111,22 @@ public class MainActivity extends AppCompatActivity {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 final int position = viewHolder.getAdapterPosition();
                 adapter.removeItem(position);
-                adapter.notifyItemRemoved(position);
+                RealmResults<DiaryData> results = realm.where(DiaryData.class)
+                        .equalTo("year", today_year)
+                        .equalTo("month", today_month)
+                        .findAll()
+                        .sort("date", Sort.ASCENDING);
+                //리사이클러뷰에 레이아웃 매니저 설정(수직 리니어 레이아웃)
+                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                //DiaryAdapter.java에서 정의해둔 어댑터 인스턴스 생성
+                adapter = new DiaryAdapter(results);
+                recyclerView.setAdapter(adapter);
 
                 Snackbar snackbar = Snackbar.make(findViewById(R.id.diaryList), "일기가 삭제되었습니다.", Snackbar.LENGTH_LONG);
                 snackbar.setAction("취소", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         adapter.restoreItem();
-                        adapter.notifyItemInserted(position);
                         recyclerView.setAdapter(adapter);
                         recyclerView.scrollToPosition(position);
                     }
@@ -158,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         //리사이클러뷰에 레이아웃 매니저 설정(수직 리니어 레이아웃)
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //DiaryAdapter.java에서 정의해둔 어댑터 인스턴스 생성
-        DiaryAdapter adapter = new DiaryAdapter(results);
+        adapter = new DiaryAdapter(results);
         //리사이클러뷰에 어댑터 선정
         recyclerView.setAdapter(adapter);
         setChart(results);
@@ -246,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
         xAxis.setTextColor(Color.BLACK);
         xAxis.enableGridDashedLine(10, 24, 0);
         xAxis.setDrawLabels(true);
-        xAxis.setGranularity(1.0f);
+//        xAxis.setGranularity(1.0f);
 
         YAxis yLAxis = lineChart.getAxisLeft();
         yLAxis.setTextColor(Color.BLACK);
