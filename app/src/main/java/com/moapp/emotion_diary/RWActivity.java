@@ -5,12 +5,15 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.icu.util.Calendar;
 import android.os.Bundle;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +34,10 @@ public class RWActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rw);
+        Toolbar tb = findViewById(R.id.toolbar2);
+        setSupportActionBar(tb);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         textView = findViewById(R.id.date_picker);
         Calendar calendar = Calendar.getInstance();
         // 오늘 연,월,일 불러옴
@@ -51,15 +58,28 @@ public class RWActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
 
     }
 
-    public void clickSave(View view) {
+    public void clickSave(MenuItem item) {
         editText = findViewById(R.id.content_view);
-        String content = editText.getText().toString();
         //저장 버튼 누를 시 새로운 DiaryData 타입의 데이터를 만든 후 연월일, 일기 내용 설정 후 데이터베이스에 저장
         if(realm.where(DiaryData.class)
                 .equalTo("uniqueKey", Integer.parseInt(mYear+mMonth+mDate)).findAll().size() == 0){
@@ -82,7 +102,7 @@ public class RWActivity extends AppCompatActivity {
         finish();
     }
 
-    public void clickDatePicker(View view) {
+    public void clickDatePicker(MenuItem item) {
         //날짜를 클릭할 시 캘린더 대화창 띄움
         DatePickerDialog dialog = new DatePickerDialog(this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, listener
                 , Integer.parseInt(mYear)
@@ -151,13 +171,5 @@ public class RWActivity extends AppCompatActivity {
         return emotion_count * 10 /total_word;
     }
 
-    //삭제 버튼 누를 시 오늘 연월일에 해당하는 일기를 찾은 뒤 데이터베이스에서 삭제
-    public void clickDelete(View view) {
-        realm.beginTransaction();
-        DiaryData data = realm.where(DiaryData.class).equalTo("uniqueKey",
-                Integer.parseInt(mYear+mMonth+mDate)).findFirst();
-        data.deleteFromRealm();
-        realm.commitTransaction();
-        finish();
-    }
+
 }
