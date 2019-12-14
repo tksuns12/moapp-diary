@@ -1,5 +1,6 @@
 package com.moapp.emotion_diary;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.icu.util.Calendar;
@@ -83,7 +84,7 @@ public class RWActivity extends AppCompatActivity {
 
     public void clickDatePicker(View view) {
         //날짜를 클릭할 시 캘린더 대화창 띄움
-        DatePickerDialog dialog = new DatePickerDialog(this, listener
+        DatePickerDialog dialog = new DatePickerDialog(this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, listener
                 , Integer.parseInt(mYear)
                 , Integer.parseInt(mMonth)-1
                 , Integer.parseInt(mDate));
