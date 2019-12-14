@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 //리사이클러뷰에 레이아웃 매니저 설정(수직 리니어 레이아웃)
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 //DiaryAdapter.java에서 정의해둔 어댑터 인스턴스 생성
-                adapter = new DiaryAdapter(results);
+                adapter.updateData(results);
                 recyclerView.setAdapter(adapter);
 
                 Snackbar snackbar = Snackbar.make(findViewById(R.id.diaryList), "일기가 삭제되었습니다.", Snackbar.LENGTH_LONG);
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         RealmResults<DiaryData> results;
         //오늘 연,월에 해당하는 모든 데이터를 찾아
-        //날짜 기준, 오름차순으로 정렬
+//        //날짜 기준, 오름차순으로 정렬
         results = realm.where(DiaryData.class)
                 .equalTo("year", today_year)
                 .equalTo("month", today_month)
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         //리사이클러뷰에 레이아웃 매니저 설정(수직 리니어 레이아웃)
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //DiaryAdapter.java에서 정의해둔 어댑터 인스턴스 생성
-        adapter = new DiaryAdapter(results);
+        adapter.updateData(results);
         //리사이클러뷰에 어댑터 선정
         recyclerView.setAdapter(adapter);
         setChart(results);

@@ -31,6 +31,11 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> 
         con_list.addAll(realm.copyFromRealm(mlist));
     }
 
+    public void updateData(RealmResults<DiaryData> update_data) {
+        this.con_list.clear();
+        this.con_list.addAll(realm.copyFromRealm(update_data));
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -100,6 +105,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> 
         data.deleteFromRealm();
         realm.commitTransaction();
         notifyItemRemoved(position);
+        con_list.remove(position);
     }
 
     void restoreItem() {
@@ -115,6 +121,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> 
         diaryData.setEmotion(temp[3]);
         realm.commitTransaction();
         notifyItemInserted(deleted_position);
+        con_list.add(deleted_position, diaryData);
         temp = null;
         temp_content = null;
         deleted_position = 0;
