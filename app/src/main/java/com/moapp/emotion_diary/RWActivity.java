@@ -41,6 +41,8 @@ public class RWActivity extends AppCompatActivity {
     private MenuItem click;
     private TextToSpeech tts;
     private Boolean isSpeaking;
+    private MenuItem delete;
+    private String mContent;
 
 
     @Override
@@ -63,6 +65,7 @@ public class RWActivity extends AppCompatActivity {
         setSupportActionBar(tb);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         textView = findViewById(R.id.date_picker);
         Calendar calendar = Calendar.getInstance();
         // 오늘 연,월,일 불러옴
@@ -76,15 +79,15 @@ public class RWActivity extends AppCompatActivity {
         mYear = Integer.toString(intent.getIntExtra("year", today_year));
         mMonth = Integer.toString(intent.getIntExtra("month", today_month));
         mDate = Integer.toString(intent.getIntExtra("date", today_date));
+        mContent = intent.getStringExtra("content");
         editText = findViewById(R.id.content_view);
-        editText.setText(intent.getStringExtra("content"));
+        editText.setText(mContent);
         textView.setText(mYear + "년 " + mMonth + "월 " + mDate + "일");
 
 
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -113,6 +116,11 @@ public class RWActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         click = menu.findItem(R.id.saveButton);
         click.setEnabled(false);
+        delete = menu.findItem(R.id.delete);
+        if (realm.where(DiaryData.class).equalTo("uniqueKey",
+                Integer.parseInt(mYear+mMonth+mDate)).findFirst() == null){
+        delete.setVisible(false);
+        delete.setEnabled(false);}
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -236,6 +244,18 @@ public class RWActivity extends AppCompatActivity {
         } else {
             tts.stop();
             isSpeaking = false;
+        }
+    }
+
+    public void clickDelete(MenuItem item) {
+        if(realm.where(DiaryData.class).equalTo("uniqueKey",
+                Integer.parseInt(mYear+mMonth+mDate)).findFirst() != null) {
+            realm.beginTransaction();
+            DiaryData data = realm.where(DiaryData.class).equalTo("uniqueKey",
+                    Integer.parseInt(mYear + mMonth + mDate)).findFirst();
+            data.deleteFromRealm();
+            realm.commitTransaction();
+            finish();
         }
     }
 }
