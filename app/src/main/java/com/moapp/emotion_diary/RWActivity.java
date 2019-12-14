@@ -1,10 +1,13 @@
 package com.moapp.emotion_diary;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -16,12 +19,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import io.realm.Realm;
+
+import static android.speech.tts.TextToSpeech.ERROR;
 
 public class RWActivity extends AppCompatActivity {
 
@@ -32,12 +39,26 @@ public class RWActivity extends AppCompatActivity {
     private String mDate;
     private EditText editText;
     private MenuItem click;
+    private TextToSpeech tts;
+    private Boolean isSpeaking;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rw);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
+        }
+        isSpeaking = false;
+        tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+                if (i != ERROR) {
+                    tts.setLanguage(Locale.KOREAN);
+                }
+            }
+        });
         Toolbar tb = findViewById(R.id.toolbar2);
         setSupportActionBar(tb);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -104,8 +125,9 @@ public class RWActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onPause() {
+        super.onPause();
+        tts.stop();
     }
 
     public void clickSave(MenuItem item) {
@@ -202,4 +224,18 @@ public class RWActivity extends AppCompatActivity {
     }
 
 
+    public void clickTTS(MenuItem item) {
+        if(!isSpeaking) {
+            if (editText.getText().toString().length() == 0) {
+                tts.speak("읽을 내용이 없네요.", TextToSpeech.QUEUE_FLUSH, null);
+                isSpeaking = true;
+            } else {
+                tts.speak(editText.getText().toString(), TextToSpeech.QUEUE_FLUSH, null);
+                isSpeaking = true;
+            }
+        } else {
+            tts.stop();
+            isSpeaking = false;
+        }
+    }
 }

@@ -18,5 +18,13 @@
         android:onClick="clickSave">
 
     </item>
+    <item
+        android:id="@+id/tts"
+        android:icon="@drawable/ic_action_tts"
+        android:title="TextToSpeech"
+        app:showAsAction="ifRoom"
+        android:onClick="clickTTS">
+
+    </item>
 
 </menu>
