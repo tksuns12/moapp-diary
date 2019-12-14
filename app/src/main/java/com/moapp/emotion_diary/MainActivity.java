@@ -44,9 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private Realm realm;
     private RecyclerView recyclerView;
     DiaryAdapter adapter;
-    private LineChart lineChart;
-    final String [] mDays = {"","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24",
-            "25","26","27","28","29","30","31"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
             DiaryAdapter adapter = new DiaryAdapter(results);
             //리사이클러뷰에 어댑터 선정
             recyclerView.setAdapter(adapter);
+            setChart(results);
         }
     };
 
@@ -261,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
         lineDataSet.setDrawHorizontalHighlightIndicator(true);
         lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER); //선 둥글게 표시
         lineDataSet.setDrawHighlightIndicators(false);
-        lineDataSet.setDrawValues(true);
+        lineDataSet.setDrawValues(false);
         lineDataSet.setDrawFilled(true); //그래프 밑 부분 채우기 유무
 
         LineData lineData = new LineData();
@@ -274,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
         xAxis.setTextColor(Color.BLACK);
         xAxis.enableGridDashedLine(10, 24, 0);
         xAxis.setDrawLabels(true);
-//        xAxis.setGranularity(1.0f);
+        xAxis.setGranularity(1.0f);
 
         YAxis yLAxis = lineChart.getAxisLeft();
         yLAxis.setTextColor(Color.BLACK);
