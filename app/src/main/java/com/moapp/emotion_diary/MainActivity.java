@@ -57,12 +57,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoadingActivity.class);
         startActivity(intent);
         setContentView(R.layout.activity_main);
-
-
-
-
-
-
         Calendar calendar = Calendar.getInstance(); // 오늘 날짜 가져오기 위해 캘린더 인스턴스 생성
         today_year = calendar.get(Calendar.YEAR); // 오늘 연도 가져오기
         today_month = calendar.get(Calendar.MONTH) + 1; //오늘 월 가져오기
@@ -98,6 +92,13 @@ public class MainActivity extends AppCompatActivity {
                 .findAll()
                 .sort("date", Sort.ASCENDING);
         //리사이클러뷰에 레이아웃 매니저 설정(수직 리니어 레이아웃)
+        if (results.size() == 0) {
+            TextView textView = findViewById(R.id.noDiary);
+            textView.setVisibility(View.VISIBLE);
+        } else {
+            TextView textView = findViewById(R.id.noDiary);
+            textView.setVisibility(View.GONE);
+        }
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //DiaryAdapter.java에서 정의해둔 어댑터 인스턴스 생성
        adapter = new DiaryAdapter(results);
@@ -116,6 +117,13 @@ public class MainActivity extends AppCompatActivity {
                         .equalTo("month", today_month)
                         .findAll()
                         .sort("date", Sort.ASCENDING);
+                if (results.size() == 0) {
+                    TextView textView = findViewById(R.id.noDiary);
+                    textView.setVisibility(View.VISIBLE);
+                } else {
+                    TextView textView = findViewById(R.id.noDiary);
+                    textView.setVisibility(View.GONE);
+                }
                 //리사이클러뷰에 레이아웃 매니저 설정(수직 리니어 레이아웃)
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 //DiaryAdapter.java에서 정의해둔 어댑터 인스턴스 생성
@@ -129,6 +137,9 @@ public class MainActivity extends AppCompatActivity {
                         adapter.restoreItem();
                         recyclerView.setAdapter(adapter);
                         recyclerView.scrollToPosition(position);
+                        TextView textView = findViewById(R.id.noDiary);
+                        textView.setVisibility(View.GONE);
+
                     }
                 });
 
@@ -163,6 +174,13 @@ public class MainActivity extends AppCompatActivity {
                 .equalTo("month", today_month)
                 .findAll()
                 .sort("date", Sort.ASCENDING);
+        if (results.size() == 0) {
+            TextView textView = findViewById(R.id.noDiary);
+            textView.setVisibility(View.VISIBLE);
+        } else {
+            TextView textView = findViewById(R.id.noDiary);
+            textView.setVisibility(View.GONE);
+        }
         //리사이클러뷰에 레이아웃 매니저 설정(수직 리니어 레이아웃)
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //DiaryAdapter.java에서 정의해둔 어댑터 인스턴스 생성
@@ -220,13 +238,15 @@ public class MainActivity extends AppCompatActivity {
         if (contentlist.size() != 0) {
             for (int day = 1, i = 0; day < 32; day++) {
                 if (i == contentlist.size()) {
-                    break;
-                }
-                if (contentlist.get(i).getDate() == day) {
-                    values.add(new Entry(day, contentlist.get(i).getEmotion()));
-                    i++;
-                } else {
                     values.add(new Entry(day, 0));
+                } else {
+                    if (contentlist.get(i).getDate() == day) {
+                        values.add(new Entry(day, contentlist.get(i).getEmotion()));
+                        i++;
+                } else {
+                        values.add(new Entry(day, 0));
+                    }
+
                 }
             }
     }

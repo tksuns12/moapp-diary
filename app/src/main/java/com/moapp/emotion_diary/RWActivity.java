@@ -5,6 +5,8 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.DatePicker;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +31,7 @@ public class RWActivity extends AppCompatActivity {
     private String mMonth;
     private String mDate;
     private EditText editText;
+    private MenuItem click;
 
 
     @Override
@@ -55,11 +59,39 @@ public class RWActivity extends AppCompatActivity {
         editText.setText(intent.getStringExtra("content"));
         textView.setText(mYear + "년 " + mMonth + "월 " + mDate + "일");
 
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (editText.getText().toString().length() == 0) {
+                    click.setEnabled(false);
+                    click.setIcon(ContextCompat.getDrawable(getApplicationContext()
+                            , R.drawable.ic_action_savebutton_disabled));
+                } else {
+                    click.setEnabled(true);
+                    click.setIcon(ContextCompat.getDrawable(getApplicationContext(),
+                            R.drawable.ic_action_savebutton));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        click = menu.findItem(R.id.saveButton);
+        click.setEnabled(false);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -74,8 +106,6 @@ public class RWActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-
     }
 
     public void clickSave(MenuItem item) {
