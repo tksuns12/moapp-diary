@@ -165,11 +165,12 @@ public class RWActivity extends AppCompatActivity {
     }
 
     public void clickDatePicker(MenuItem item) {
-        //날짜를 클릭할 시 캘린더 대화창 띄움
+        //날짜변경을 클릭할 시 캘린더 대화창 띄움
         DatePickerDialog dialog = new DatePickerDialog(this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, listener
                 , Integer.parseInt(mYear)
                 , Integer.parseInt(mMonth)-1
                 , Integer.parseInt(mDate));
+        dialog.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis()); //날짜 변경 시 오늘 이후로 선택 불가능하도록 제한
         dialog.show();
     }
     //날짜가 바뀔 시 연월일을 바뀐대로 설정, 그러나 잘 안 되는 것 같음.
