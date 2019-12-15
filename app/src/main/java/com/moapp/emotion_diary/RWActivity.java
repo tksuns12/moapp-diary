@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Locale;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
 import static android.speech.tts.TextToSpeech.ERROR;
 
@@ -178,6 +180,11 @@ public class RWActivity extends AppCompatActivity {
             mMonth = Integer.toString(month + 1);
             mDate = Integer.toString(dayOfMonth);
             textView.setText(year + "년 " + (month + 1) + "월 " + dayOfMonth + "일");
+
+            //변경한 날짜 일기 로딩
+            DiaryData result = realm.where(DiaryData.class)
+                    .equalTo("uniqueKey", Integer.parseInt(mYear+mMonth+mDate)).findFirst();
+            editText.setText(result.getContent());
         }
     };
 
