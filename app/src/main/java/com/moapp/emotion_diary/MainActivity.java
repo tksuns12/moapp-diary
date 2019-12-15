@@ -8,17 +8,16 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -27,7 +26,6 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -46,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private Realm realm;
     private ListView listView;
     NewDiaryAdapter adapter;
+    private long mBackPressed;
+    private Toast closeToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +152,18 @@ public class MainActivity extends AppCompatActivity {
         setChart(results);
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        closeToast = Toast.makeText(this, "종료하려면 한 번 더 누르세요.", Toast.LENGTH_SHORT);
+        if (mBackPressed + 2000 > System.currentTimeMillis()) {
+            closeToast.cancel();
+            super.onBackPressed();
+        } else {
+            closeToast.show();
+        }
+        mBackPressed = System.currentTimeMillis();
     }
 
     @Override
