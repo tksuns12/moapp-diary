@@ -31,14 +31,13 @@ public class NewDiaryAdapter extends BaseAdapter {
     private int[] temp;
     private String temp_content;
     private int deleted_position;
-    private TextView no_diary;
 
-    public NewDiaryAdapter(RealmResults<DiaryData> list) {
+    public NewDiaryAdapter(RealmResults<DiaryData> list, int iyear, int imonth, int iday) {
         mlist = list;
         realm = Realm.getDefaultInstance();
-        year = list.get(0).getYear();
-        month = list.get(0).getMonth();
-        day = list.get(0).getDate();
+        year = iyear;
+        month = imonth;
+        day = iday;
         Calendar mycal = new GregorianCalendar(year, month-1, day);
         maxdaysofMonth = mycal.getActualMaximum(Calendar.DAY_OF_MONTH);
         Calendar cal = Calendar.getInstance();

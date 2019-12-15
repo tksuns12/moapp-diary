@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
     private int today_year;
     private int today_month;
     private int today_date;
-    private FloatingActionButton writeButton;
     private TextView year_show;
     private TextView month_show;
     private Realm realm;
@@ -61,23 +60,13 @@ public class MainActivity extends AppCompatActivity {
         today_year = calendar.get(Calendar.YEAR); // 오늘 연도 가져오기
         today_month = calendar.get(Calendar.MONTH) + 1; //오늘 월 가져오기
         today_date = calendar.get(Calendar.DATE); // 오늘 일 가져오기
-        writeButton = findViewById(R.id.floatingActionButton2); //쓰기 버튼 할당
         year_show = findViewById(R.id.year);
         month_show = findViewById(R.id.month);
         year_show.setText(Integer.toString(today_year));
         month_show.setText(Integer.toString(today_month));
         //쓰기 버튼에 클릭리스너 할당
         //쓰기 버튼을 누르면 오늘 날짜를 인텐트에 담아 RWActivity로 넘겨주고 RWActivity를 불러옴
-        writeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), RWActivity.class);
-                intent.putExtra("year", today_year)
-                        .putExtra("month", today_month)
-                        .putExtra("date", today_date);
-                startActivity(intent);
-            }
-        });
+
         //리사이클러뷰 할당
         listView = findViewById(R.id.diaryList);
         //데이터베이스 인스턴스 가져오기
@@ -91,16 +80,8 @@ public class MainActivity extends AppCompatActivity {
                 .equalTo("month", today_month)
                 .findAll()
                 .sort("date", Sort.ASCENDING);
-        //리사이클러뷰에 레이아웃 매니저 설정(수직 리니어 레이아웃)
-        if (results.size() == 0) {
-            TextView textView = findViewById(R.id.noDiary);
-            textView.setVisibility(View.VISIBLE);
-        } else {
-            TextView textView = findViewById(R.id.noDiary);
-            textView.setVisibility(View.GONE);
-        }
 
-       adapter = new NewDiaryAdapter(results);
+        adapter = new NewDiaryAdapter(results, today_year, today_month, today_date);
 
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -136,13 +117,6 @@ public class MainActivity extends AppCompatActivity {
                                                     .equalTo("month", today_month)
                                                     .findAll()
                                                     .sort("date", Sort.ASCENDING);
-                                            if (results.size() == 0) {
-                                                TextView textView = findViewById(R.id.noDiary);
-                                                textView.setVisibility(View.VISIBLE);
-                                            } else {
-                                                TextView textView = findViewById(R.id.noDiary);
-                                                textView.setVisibility(View.GONE);
-                                            }
 
                                             adapter.updateData(results);
                                             listView.setAdapter(adapter);
@@ -160,8 +134,7 @@ public class MainActivity extends AppCompatActivity {
                                                     adapter.restoreItem();
                                                     listView.setAdapter(adapter);
                                                     listView.scrollListBy(position);
-                                                    TextView textView = findViewById(R.id.noDiary);
-                                                    textView.setVisibility(View.GONE);
+
                                                     setChart(results);
                                                 }
                                             });
@@ -177,6 +150,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         setChart(results);
+
+
     }
 
     @Override
@@ -197,13 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 .equalTo("month", today_month)
                 .findAll()
                 .sort("date", Sort.ASCENDING);
-        if (results.size() == 0) {
-            TextView textView = findViewById(R.id.noDiary);
-            textView.setVisibility(View.VISIBLE);
-        } else {
-            TextView textView = findViewById(R.id.noDiary);
-            textView.setVisibility(View.GONE);
-        }
+
 
         adapter.updateData(results);
         //리사이클러뷰에 어댑터 선정
@@ -239,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                     .equalTo("month", today_month)
                     .findAll()
                     .sort("date", Sort.ASCENDING);
-            NewDiaryAdapter adapter = new NewDiaryAdapter(results);
+            NewDiaryAdapter adapter = new NewDiaryAdapter(results, today_year, today_month, today_date);
             //리사이클러뷰에 어댑터 선정
             listView.setAdapter(adapter);
         }
