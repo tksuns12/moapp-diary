@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         adapter = new NewDiaryAdapter(results, today_year, today_month, today_date);
 
         listView.setAdapter(adapter);
+        listView.setSelection(adapter.getCount() - 1);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -120,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
                                             adapter.updateData(results);
                                             listView.setAdapter(adapter);
+                                            listView.setSelection(adapter.getCount() - 1);
                                             setChart(results);
 
                                             Snackbar snackbar = Snackbar.make(findViewById(R.id.diaryList), "일기가 삭제되었습니다.", Snackbar.LENGTH_LONG);
@@ -189,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.updateData(results);
         //리사이클러뷰에 어댑터 선정
         listView.setAdapter(adapter);
+        listView.setSelection(adapter.getCount() - 1);
         setChart(results);
     }
 
@@ -223,6 +226,7 @@ public class MainActivity extends AppCompatActivity {
             NewDiaryAdapter adapter = new NewDiaryAdapter(results, today_year, today_month, today_date);
             //리사이클러뷰에 어댑터 선정
             listView.setAdapter(adapter);
+            listView.setSelection(adapter.getCount() - 1);
         }
     };
 
