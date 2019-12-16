@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                                                             .sort("date", Sort.ASCENDING);
                                                     adapter.restoreItem();
                                                     listView.setAdapter(adapter);
-                                                    listView.scrollListBy(position);
+                                                    listView.setSelection(position);
 
                                                     setChart(results);
                                                 }
