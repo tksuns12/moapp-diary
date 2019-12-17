@@ -38,13 +38,19 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3">
+        android:layout_weight="3"
+        android:background="#E5E0C3"
+        >
 
         <ListView
             android:id="@+id/diaryList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="3">
+            android:layout_weight="3"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:dividerHeight="10dp"
+            android:divider="#00000000">
 
         </ListView>
     </FrameLayout>
