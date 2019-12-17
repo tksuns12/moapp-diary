@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.os.Handler;
@@ -61,7 +62,9 @@ public class MainActivity extends AppCompatActivity {
         today_month = calendar.get(Calendar.MONTH) + 1; //오늘 월 가져오기
         today_date = calendar.get(Calendar.DATE); // 오늘 일 가져오기
         year_show = findViewById(R.id.year);
+        year_show.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Binggrae.ttf"));
         month_show = findViewById(R.id.month);
+        month_show.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Binggrae.ttf"));
         year_show.setText(Integer.toString(today_year));
         month_show.setText(Integer.toString(today_month));
         //쓰기 버튼에 클릭리스너 할당

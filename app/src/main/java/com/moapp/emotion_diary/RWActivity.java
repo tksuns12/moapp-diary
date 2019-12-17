@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -69,6 +70,7 @@ public class RWActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         textView = findViewById(R.id.date_picker);
+        textView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Binggrae.ttf"));
         Calendar calendar = Calendar.getInstance();
         // 오늘 연,월,일 불러옴
         int today_year = calendar.get(Calendar.YEAR);
@@ -83,6 +85,7 @@ public class RWActivity extends AppCompatActivity {
         mDate = Integer.toString(intent.getIntExtra("date", today_date));
         mContent = intent.getStringExtra("content");
         editText = findViewById(R.id.content_view);
+        editText.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/SDMiSaeng.ttf"));
         editText.setText(mContent);
         textView.setText(mYear + "년 " + mMonth + "월 " + mDate + "일");
 

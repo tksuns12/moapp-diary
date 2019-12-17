@@ -1,6 +1,7 @@
 package com.moapp.emotion_diary;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -93,7 +95,9 @@ public class NewDiaryAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.list_item, viewGroup, false);
             viewHolder.imageView = view.findViewById(R.id.add_diary);
             viewHolder.date = view.findViewById(R.id.date);
+            viewHolder.date.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Crasns.ttf"));
             viewHolder.content = view.findViewById(R.id.content);
+            viewHolder.content.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/SDMiSaeng.ttf"));
             view.setTag(viewHolder);
 
 
