@@ -11,39 +11,49 @@
         android:id="@+id/year"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textSize="15dp"/>
+        android:gravity="center_horizontal" />
 
     <TextView
         android:id="@+id/month"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="01"
-        android:textSize="35dp"/>
+        android:text="01" />
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3">
+        android:layout_height="match_parent"
+        android:layout_weight="3" >
 
     </com.github.mikephil.charting.charts.LineChart>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3">
+        android:layout_height="366dp">
 
-        <ListView
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="아직 일기가 없어요 ㅜㅜ"
+            android:id="@+id/noDiary"/>
+
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/diaryList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="3">
 
-        </ListView>
-    </FrameLayout>
+        </androidx.recyclerview.widget.RecyclerView>
 
+        <include
+            layout="@layout/activity_floating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom" />
+
+
+    </FrameLayout>
 
 
 </LinearLayout>

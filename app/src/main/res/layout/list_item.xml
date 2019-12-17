@@ -11,25 +11,13 @@
         android:gravity="center"
         android:textSize="50sp"
         android:textStyle="bold"/>
-    <FrameLayout
+    <TextView
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="4">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/add_diary"
-            android:src="@drawable/ic_write"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/content"
-            android:textSize="25sp"
-            android:gravity="center"
-            android:maxLines="1"/>
-
-    </FrameLayout>
+        android:layout_weight="4"
+        android:id="@+id/content"
+        android:textSize="25sp"
+        android:gravity="center"
+        android:maxLines="1"/>
 
 </LinearLayout>
