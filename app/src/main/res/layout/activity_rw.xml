@@ -37,6 +37,8 @@
         android:paddingTop="30sp"
         android:paddingRight="20sp"
         android:hint="일기를 써보세요."
-        android:background="@drawable/paper_background"/>
+        android:singleLine="false"
+        android:background="@drawable/paper_background"
+        android:inputType="textMultiLine|textNoSuggestions"/>
 
 </LinearLayout>
