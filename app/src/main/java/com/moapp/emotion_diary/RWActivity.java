@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.Locale;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
 import static android.speech.tts.TextToSpeech.ERROR;
 
@@ -37,10 +40,12 @@ public class RWActivity extends AppCompatActivity {
     private String mYear;
     private String mMonth;
     private String mDate;
-    private EditText editText;
+    private LinedEditText editText;
     private MenuItem click;
     private TextToSpeech tts;
     private Boolean isSpeaking;
+    private MenuItem delete;
+    private String mContent;
 
 
     @Override
@@ -63,7 +68,9 @@ public class RWActivity extends AppCompatActivity {
         setSupportActionBar(tb);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         textView = findViewById(R.id.date_picker);
+        textView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Binggrae.ttf"));
         Calendar calendar = Calendar.getInstance();
         // 오늘 연,월,일 불러옴
         int today_year = calendar.get(Calendar.YEAR);
@@ -76,15 +83,16 @@ public class RWActivity extends AppCompatActivity {
         mYear = Integer.toString(intent.getIntExtra("year", today_year));
         mMonth = Integer.toString(intent.getIntExtra("month", today_month));
         mDate = Integer.toString(intent.getIntExtra("date", today_date));
+        mContent = intent.getStringExtra("content");
         editText = findViewById(R.id.content_view);
-        editText.setText(intent.getStringExtra("content"));
+        editText.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/SDMiSaeng.ttf"));
+        editText.setText(mContent);
         textView.setText(mYear + "년 " + mMonth + "월 " + mDate + "일");
 
 
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -113,6 +121,11 @@ public class RWActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         click = menu.findItem(R.id.saveButton);
         click.setEnabled(false);
+        delete = menu.findItem(R.id.delete);
+        if (realm.where(DiaryData.class).equalTo("uniqueKey",
+                Integer.parseInt(mYear+mMonth+mDate)).findFirst() == null){
+        delete.setVisible(false);
+        delete.setEnabled(false);}
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -155,11 +168,12 @@ public class RWActivity extends AppCompatActivity {
     }
 
     public void clickDatePicker(MenuItem item) {
-        //날짜를 클릭할 시 캘린더 대화창 띄움
+        //날짜변경을 클릭할 시 캘린더 대화창 띄움
         DatePickerDialog dialog = new DatePickerDialog(this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, listener
                 , Integer.parseInt(mYear)
                 , Integer.parseInt(mMonth)-1
                 , Integer.parseInt(mDate));
+        dialog.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis()); //날짜 변경 시 오늘 이후로 선택 불가능하도록 제한
         dialog.show();
     }
     //날짜가 바뀔 시 연월일을 바뀐대로 설정, 그러나 잘 안 되는 것 같음.
@@ -170,6 +184,11 @@ public class RWActivity extends AppCompatActivity {
             mMonth = Integer.toString(month + 1);
             mDate = Integer.toString(dayOfMonth);
             textView.setText(year + "년 " + (month + 1) + "월 " + dayOfMonth + "일");
+
+            //변경한 날짜 일기 로딩
+            DiaryData result = realm.where(DiaryData.class)
+                    .equalTo("uniqueKey", Integer.parseInt(mYear+mMonth+mDate)).findFirst();
+            editText.setText(result.getContent());
         }
     };
 
@@ -236,6 +255,18 @@ public class RWActivity extends AppCompatActivity {
         } else {
             tts.stop();
             isSpeaking = false;
+        }
+    }
+
+    public void clickDelete(MenuItem item) {
+        if(realm.where(DiaryData.class).equalTo("uniqueKey",
+                Integer.parseInt(mYear+mMonth+mDate)).findFirst() != null) {
+            realm.beginTransaction();
+            DiaryData data = realm.where(DiaryData.class).equalTo("uniqueKey",
+                    Integer.parseInt(mYear + mMonth + mDate)).findFirst();
+            data.deleteFromRealm();
+            realm.commitTransaction();
+            finish();
         }
     }
 }

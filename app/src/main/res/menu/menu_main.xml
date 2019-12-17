@@ -3,16 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/datePicker"
-        android:title="DatePicker"
-        android:icon="@drawable/ic_action_datepicker"
-        app:showAsAction="ifRoom"
-        android:onClick="clickDatePicker">
-    </item>
-
-    <item
         android:id="@+id/saveButton"
-        android:title="SaveButton"
+        android:title="저장"
         android:icon="@drawable/ic_action_savebutton_disabled"
         app:showAsAction="ifRoom"
         android:onClick="clickSave">
@@ -21,10 +13,26 @@
     <item
         android:id="@+id/tts"
         android:icon="@drawable/ic_action_tts"
-        android:title="TextToSpeech"
+        android:title="일기 읽어주기"
         app:showAsAction="ifRoom"
         android:onClick="clickTTS">
 
+    </item>
+
+    <item
+        android:id="@+id/delete"
+        android:icon="@drawable/ic_delete"
+        app:showAsAction="ifRoom"
+        android:onClick="clickDelete"
+        android:title="삭제">
+    </item>
+
+    <item
+        android:id="@+id/datePicker"
+        android:title="날짜 변경"
+        android:icon="@drawable/ic_action_datepicker"
+        app:showAsAction=""
+        android:onClick="clickDatePicker">
     </item>
 
 </menu>
