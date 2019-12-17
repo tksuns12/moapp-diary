@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private long mBackPressed;
     private Toast closeToast;
     private ImageButton add_diary;
+    private final String[] month_names = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +69,9 @@ public class MainActivity extends AppCompatActivity {
         year_show = findViewById(R.id.year);
         year_show.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Binggrae.ttf"));
         month_show = findViewById(R.id.month);
-        month_show.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Binggrae.ttf"));
+        month_show.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Dense-Regular.otf"));
         year_show.setText(Integer.toString(today_year));
-        month_show.setText(Integer.toString(today_month));
+        month_show.setText(month_names[today_month-1]);
         //쓰기 버튼에 클릭리스너 할당
         //쓰기 버튼을 누르면 오늘 날짜를 인텐트에 담아 RWActivity로 넘겨주고 RWActivity를 불러옴
 
@@ -218,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             year_show.setText(Integer.toString(year));
-            month_show.setText(Integer.toString(month+1));
+            month_show.setText(month_names[month]);
             today_year = year;
             today_month = month+1;
             //오늘 연,월에 해당하는 모든 데이터를 찾아

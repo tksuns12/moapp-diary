@@ -96,7 +96,7 @@ public class NewDiaryAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.list_item, viewGroup, false);
             viewHolder.imageView = view.findViewById(R.id.add_diary);
             viewHolder.date = view.findViewById(R.id.date);
-            viewHolder.date.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Crasns.ttf"));
+            viewHolder.date.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Dense-Regular.otf"));
             viewHolder.content = view.findViewById(R.id.content);
             viewHolder.content.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/SDMiSaeng.ttf"));
             view.setTag(viewHolder);
