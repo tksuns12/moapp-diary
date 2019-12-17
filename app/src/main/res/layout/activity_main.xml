@@ -24,25 +24,37 @@
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="3" >
 
     </com.github.mikephil.charting.charts.LineChart>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3">
+        android:layout_height="366dp">
 
-        <ListView
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="아직 일기가 없어요 ㅜㅜ"
+            android:id="@+id/noDiary"/>
+
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/diaryList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="3">
 
-        </ListView>
-    </FrameLayout>
+        </androidx.recyclerview.widget.RecyclerView>
 
+        <include
+            layout="@layout/activity_floating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom" />
+
+
+    </FrameLayout>
 
 
 </LinearLayout>
