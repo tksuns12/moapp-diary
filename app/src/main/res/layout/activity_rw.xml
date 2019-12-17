@@ -22,12 +22,16 @@
         android:id="@+id/date_picker"
         android:layout_gravity="center"/>
 
-    <EditText
+    <com.moapp.emotion_diary.LinedEditText
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:id="@+id/content_view"
-        android:textSize="30dp"
-        android:background="@drawable/paper_background"/>
+        android:textSize="30sp"
+        android:background="@drawable/paper_background"
+        android:gravity="top|start"
+        android:minLines="10"
+        android:inputType="textMultiLine"
+        android:layout_marginTop="30sp"/>
 
 </LinearLayout>

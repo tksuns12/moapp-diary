@@ -40,7 +40,7 @@ public class RWActivity extends AppCompatActivity {
     private String mYear;
     private String mMonth;
     private String mDate;
-    private EditText editText;
+    private LinedEditText editText;
     private MenuItem click;
     private TextToSpeech tts;
     private Boolean isSpeaking;
