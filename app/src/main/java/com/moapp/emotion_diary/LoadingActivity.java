@@ -16,6 +16,7 @@ import io.realm.Realm;
 public class LoadingActivity extends Activity {
 
     Realm realm;
+    boolean isFirst;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,7 @@ public class LoadingActivity extends Activity {
         //스레드 시작
         InitializeDict initializeDict = new InitializeDict();
         initializeDict.execute(10);
+        isFirst = false;
     }
 
     //AsyncTask를 상속한 스레드 구현
@@ -69,6 +71,7 @@ public class LoadingActivity extends Activity {
                             progress++;
                             continue;
                         }
+                        isFirst=true;
                         realm.beginTransaction();
                         SentiDict sentiDict = realm.createObject(SentiDict.class, str[0]);
                         sentiDict.setScore(Integer.parseInt(str[1]));
@@ -98,7 +101,9 @@ public class LoadingActivity extends Activity {
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
+            if(isFirst){
             Toast.makeText(getApplicationContext(), "사전 DB 작업이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+            }
             finish();
         }
     }
