@@ -2,20 +2,22 @@ package com.moapp.emotion_diary;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.DatePicker;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -24,7 +26,6 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -38,12 +39,13 @@ public class MainActivity extends AppCompatActivity {
     private int today_year;
     private int today_month;
     private int today_date;
-    private FloatingActionButton writeButton;
     private TextView year_show;
     private TextView month_show;
     private Realm realm;
-    private RecyclerView recyclerView;
-    DiaryAdapter adapter;
+    private ListView listView;
+    NewDiaryAdapter adapter;
+    private long mBackPressed;
+    private Toast closeToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,25 +60,15 @@ public class MainActivity extends AppCompatActivity {
         today_year = calendar.get(Calendar.YEAR); // 오늘 연도 가져오기
         today_month = calendar.get(Calendar.MONTH) + 1; //오늘 월 가져오기
         today_date = calendar.get(Calendar.DATE); // 오늘 일 가져오기
-        writeButton = findViewById(R.id.floatingActionButton2); //쓰기 버튼 할당
         year_show = findViewById(R.id.year);
         month_show = findViewById(R.id.month);
         year_show.setText(Integer.toString(today_year));
         month_show.setText(Integer.toString(today_month));
         //쓰기 버튼에 클릭리스너 할당
         //쓰기 버튼을 누르면 오늘 날짜를 인텐트에 담아 RWActivity로 넘겨주고 RWActivity를 불러옴
-        writeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), RWActivity.class);
-                intent.putExtra("year", today_year)
-                        .putExtra("month", today_month)
-                        .putExtra("date", today_date);
-                startActivity(intent);
-            }
-        });
+
         //리사이클러뷰 할당
-        recyclerView = findViewById(R.id.diaryList);
+        listView = findViewById(R.id.diaryList);
         //데이터베이스 인스턴스 가져오기
         realm = Realm.getDefaultInstance();
         //탐색 결과 초기화
@@ -88,69 +80,92 @@ public class MainActivity extends AppCompatActivity {
                 .equalTo("month", today_month)
                 .findAll()
                 .sort("date", Sort.ASCENDING);
-        //리사이클러뷰에 레이아웃 매니저 설정(수직 리니어 레이아웃)
-        if (results.size() == 0) {
-            TextView textView = findViewById(R.id.noDiary);
-            textView.setVisibility(View.VISIBLE);
-        } else {
-            TextView textView = findViewById(R.id.noDiary);
-            textView.setVisibility(View.GONE);
-        }
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //DiaryAdapter.java에서 정의해둔 어댑터 인스턴스 생성
-       adapter = new DiaryAdapter(results);
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
 
+        adapter = new NewDiaryAdapter(results, today_year, today_month, today_date);
+
+        listView.setAdapter(adapter);
+        listView.setSelection(adapter.getCount() - 1);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                final int position = viewHolder.getAdapterPosition();
-                adapter.removeItem(position);
-                RealmResults<DiaryData> results = realm.where(DiaryData.class)
-                        .equalTo("year", today_year)
-                        .equalTo("month", today_month)
-                        .findAll()
-                        .sort("date", Sort.ASCENDING);
-                if (results.size() == 0) {
-                    TextView textView = findViewById(R.id.noDiary);
-                    textView.setVisibility(View.VISIBLE);
-                } else {
-                    TextView textView = findViewById(R.id.noDiary);
-                    textView.setVisibility(View.GONE);
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                DiaryData item = (DiaryData) adapterView.getItemAtPosition(i);
+                if (i != ListView.NO_ID) {
+                    Intent intent = new Intent(getApplicationContext(), RWActivity.class);
+                    intent.putExtra("year", today_year)
+                            .putExtra("month", today_month)
+                            .putExtra("date", i+1)
+                            .putExtra("content", item.getContent());
+                    startActivity(intent);
                 }
-                //리사이클러뷰에 레이아웃 매니저 설정(수직 리니어 레이아웃)
-                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                //DiaryAdapter.java에서 정의해둔 어댑터 인스턴스 생성
-                adapter.updateData(results);
-                recyclerView.setAdapter(adapter);
-
-                Snackbar snackbar = Snackbar.make(findViewById(R.id.diaryList), "일기가 삭제되었습니다.", Snackbar.LENGTH_LONG);
-                snackbar.setAction("취소", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        adapter.restoreItem();
-                        recyclerView.setAdapter(adapter);
-                        recyclerView.scrollToPosition(position);
-                        TextView textView = findViewById(R.id.noDiary);
-                        textView.setVisibility(View.GONE);
-
-                    }
-                });
-
-                snackbar.setActionTextColor(Color.CYAN);
-                snackbar.show();
-
             }
-        };
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemTouchHelperCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
-        //리사이클러뷰에 어댑터 설정
-        recyclerView.setAdapter(adapter);
+        });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final int position = i;
+                DiaryData temp = (DiaryData) adapterView.getItemAtPosition(position);
+                if (temp.getContent() != null) {
+                    new AlertDialog.Builder(MainActivity.this, R.style.MyAlertDialogStyle)
+                            .setTitle("삭제")
+                            .setMessage("삭제하시려면 예를 누르세요.")
+                            .setPositiveButton("삭제",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            adapter.removeItem(position);
+                                            RealmResults<DiaryData> results = realm.where(DiaryData.class)
+                                                    .equalTo("year", today_year)
+                                                    .equalTo("month", today_month)
+                                                    .findAll()
+                                                    .sort("date", Sort.ASCENDING);
 
+                                            adapter.updateData(results);
+                                            listView.setAdapter(adapter);
+                                            listView.setSelection(adapter.getCount() - 1);
+                                            setChart(results);
+
+                                            Snackbar snackbar = Snackbar.make(findViewById(R.id.diaryList), "일기가 삭제되었습니다.", Snackbar.LENGTH_LONG);
+                                            snackbar.setAction("취소", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    RealmResults<DiaryData> results = realm.where(DiaryData.class)
+                                                            .equalTo("year", today_year)
+                                                            .equalTo("month", today_month)
+                                                            .findAll()
+                                                            .sort("date", Sort.ASCENDING);
+                                                    adapter.restoreItem();
+                                                    listView.setAdapter(adapter);
+                                                    listView.setSelection(position);
+
+                                                    setChart(results);
+                                                }
+                                            });
+
+                                            snackbar.setActionTextColor(Color.CYAN);
+                                            snackbar.show();
+                                        }
+                                    })
+                            .setNegativeButton("취소", null)
+                            .show();
+                }
+                return true;
+            }
+        });
         setChart(results);
+
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        closeToast = Toast.makeText(this, "종료하려면 한 번 더 누르세요.", Toast.LENGTH_SHORT);
+        if (mBackPressed + 2000 > System.currentTimeMillis()) {
+            closeToast.cancel();
+            super.onBackPressed();
+        } else {
+            closeToast.show();
+        }
+        mBackPressed = System.currentTimeMillis();
     }
 
     @Override
@@ -171,19 +186,12 @@ public class MainActivity extends AppCompatActivity {
                 .equalTo("month", today_month)
                 .findAll()
                 .sort("date", Sort.ASCENDING);
-        if (results.size() == 0) {
-            TextView textView = findViewById(R.id.noDiary);
-            textView.setVisibility(View.VISIBLE);
-        } else {
-            TextView textView = findViewById(R.id.noDiary);
-            textView.setVisibility(View.GONE);
-        }
-        //리사이클러뷰에 레이아웃 매니저 설정(수직 리니어 레이아웃)
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //DiaryAdapter.java에서 정의해둔 어댑터 인스턴스 생성
+
+
         adapter.updateData(results);
         //리사이클러뷰에 어댑터 선정
-        recyclerView.setAdapter(adapter);
+        listView.setAdapter(adapter);
+        listView.setSelection(adapter.getCount() - 1);
         setChart(results);
     }
 
@@ -215,13 +223,10 @@ public class MainActivity extends AppCompatActivity {
                     .equalTo("month", today_month)
                     .findAll()
                     .sort("date", Sort.ASCENDING);
-            //리사이클러뷰에 레이아웃 매니저 설정(수직 리니어 레이아웃)
-            recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-            //DiaryAdapter.java에서 정의해둔 어댑터 인스턴스 생성
-            DiaryAdapter adapter = new DiaryAdapter(results);
+            NewDiaryAdapter adapter = new NewDiaryAdapter(results, today_year, today_month, today_date);
             //리사이클러뷰에 어댑터 선정
-            recyclerView.setAdapter(adapter);
-            setChart(results);
+            listView.setAdapter(adapter);
+            listView.setSelection(adapter.getCount() - 1);
         }
     };
 

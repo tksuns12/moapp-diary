@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/add_diary"
-            android:src="@drawable/ic_write"/>
+            android:src="@drawable/fab1"/>
 
         <TextView
             android:layout_width="match_parent"
