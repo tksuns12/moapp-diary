@@ -31,12 +31,12 @@
         android:layout_weight="20"
         android:id="@+id/content_view"
         android:textSize="30sp"
-        android:background="@drawable/paper_background"
         android:gravity="top|start"
         android:minLines="10"
-        android:inputType="textMultiLine"
         android:paddingLeft="20sp"
         android:paddingTop="30sp"
-        android:paddingRight="20sp"/>
+        android:paddingRight="20sp"
+        android:hint="일기를 써보세요."
+        android:background="@drawable/paper_background"/>
 
 </LinearLayout>
