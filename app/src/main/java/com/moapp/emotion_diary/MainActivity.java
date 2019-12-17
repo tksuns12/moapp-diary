@@ -276,8 +276,8 @@ public class MainActivity extends AppCompatActivity {
 
         xAxis.setTextColor(Color.BLACK);
         xAxis.enableGridDashedLine(10, 24, 0);
-        xAxis.setDrawLabels(true);
-//        xAxis.setGranularity(1.0f);
+        xAxis.setDrawLabels(false);
+        xAxis.setGranularity(1.0f);
 
         YAxis yLAxis = lineChart.getAxisLeft();
         yLAxis.setTextColor(Color.BLACK);
