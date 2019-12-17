@@ -13,25 +13,30 @@
         android:background="#8A4D16"
         android:fitsSystemWindows="true"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"/>
+        android:theme="?attr/actionBarTheme"
+        android:elevation="10dp"/>
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:text="2019년 12월 9일"
         android:id="@+id/date_picker"
-        android:layout_gravity="center"/>
+        android:gravity="center_vertical|center_horizontal"
+        android:background="@drawable/paper_background"/>
 
     <com.moapp.emotion_diary.LinedEditText
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="20"
         android:id="@+id/content_view"
         android:textSize="30sp"
         android:background="@drawable/paper_background"
         android:gravity="top|start"
         android:minLines="10"
         android:inputType="textMultiLine"
-        android:layout_marginTop="30sp"/>
+        android:paddingLeft="20sp"
+        android:paddingTop="30sp"
+        android:paddingRight="20sp"/>
 
 </LinearLayout>

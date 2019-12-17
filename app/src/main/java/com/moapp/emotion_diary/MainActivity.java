@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     NewDiaryAdapter adapter;
     private long mBackPressed;
     private Toast closeToast;
+    private ImageButton add_diary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
