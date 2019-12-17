@@ -233,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
             //리사이클러뷰에 어댑터 선정
             listView.setAdapter(adapter);
             listView.setSelection(adapter.getCount() - 1);
+            setChart(results);
         }
     };
 
@@ -264,14 +265,14 @@ public class MainActivity extends AppCompatActivity {
         lineDataSet.setLineWidth(2);
         lineDataSet.setCircleRadius(4);
         lineDataSet.setCircleColor(Color.BLUE);  //데이터 원 색상
-        lineDataSet.setColor(Color.parseColor("#A42196F3")); //데이터 선 색상
+        lineDataSet.setColor(Color.parseColor("#F7CA5C25")); //데이터 선 색상
         lineDataSet.setDrawCircleHole(false);
         lineDataSet.setDrawCircles(false);
         lineDataSet.setDrawHorizontalHighlightIndicator(true);
         lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER); //선 둥글게 표시
         lineDataSet.setDrawHighlightIndicators(false);
         lineDataSet.setDrawValues(false);
-        lineDataSet.setDrawFilled(true); //그래프 밑 부분 채우기 유무
+        lineDataSet.setDrawFilled(false); //그래프 밑 부분 채우기 유무
 
         LineData lineData = new LineData();
         lineData.addDataSet(lineDataSet);
