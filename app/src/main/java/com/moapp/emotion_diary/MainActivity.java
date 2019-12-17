@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
         lineDataSet.setDrawHorizontalHighlightIndicator(true);
         lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER); //선 둥글게 표시
         lineDataSet.setDrawHighlightIndicators(false);
-        lineDataSet.setDrawValues(true);
+        lineDataSet.setDrawValues(false);
         lineDataSet.setDrawFilled(true); //그래프 밑 부분 채우기 유무
 
         LineData lineData = new LineData();
@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
 
         xAxis.setTextColor(Color.BLACK);
         xAxis.enableGridDashedLine(10, 24, 0);
-        xAxis.setDrawLabels(false);
+        xAxis.setDrawLabels(true);
         xAxis.setGranularity(1.0f);
 
         YAxis yLAxis = lineChart.getAxisLeft();
