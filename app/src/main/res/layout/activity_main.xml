@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:textSize="45sp"
-        android:background="#F78A4D16"
+        android:background="#8A4D16"
         android:textColor="#fffff0"/>
 
     <com.github.mikephil.charting.charts.LineChart
