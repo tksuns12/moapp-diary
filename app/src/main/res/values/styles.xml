@@ -9,9 +9,18 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="MyAlertDialogStyle" parent="Theme.MaterialComponents.Dialog.Alert">
-        <item name="android:textColor">#000007</item>
+    <style name="MyToolbarMenuStyle" parent="Theme.AppCompat.Light">
+        <item name="android:colorBackground">#6F3602</item>
+        <item name="android:textColor">#fffff0</item>
+    </style>
+
+    <style name="MyAlertDialogStyle" parent="">
+        <item name="colorAccent">#8A4D16</item>
         <item name="android:textColorPrimary">#000006</item>
+    </style>
+
+    <style name="DatePickerTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">#8A4D16</item>
     </style>
 
 </resources>

@@ -205,13 +205,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void clickDatePickerMain(View view) {
         //날짜를 클릭할 시 캘린더 대화창 띄움
-        DatePickerDialog dialog = new DatePickerDialog(this, AlertDialog.THEME_HOLO_DARK, listener
+        DatePickerDialog dialog = new DatePickerDialog(this, AlertDialog.THEME_HOLO_LIGHT, listener
                 , today_year
                 , today_month-1
                 , 1);
         //연, 월만 선택하면 되기 때문에 일은 안 보이도록 설정함.
         dialog.getDatePicker().findViewById(Resources.getSystem()
                 .getIdentifier("day", "id", "android")).setVisibility(View.GONE);
+        dialog.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
         dialog.show();
     }
 

@@ -169,7 +169,7 @@ public class RWActivity extends AppCompatActivity {
 
     public void clickDatePicker(MenuItem item) {
         //날짜변경을 클릭할 시 캘린더 대화창 띄움
-        DatePickerDialog dialog = new DatePickerDialog(this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, listener
+        DatePickerDialog dialog = new DatePickerDialog(this, R.style.DatePickerTheme, listener
                 , Integer.parseInt(mYear)
                 , Integer.parseInt(mMonth)-1
                 , Integer.parseInt(mDate));
