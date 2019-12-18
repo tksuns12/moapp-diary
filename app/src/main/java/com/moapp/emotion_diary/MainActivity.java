@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                                 .findAll()
                                 .sort("date", Sort.ASCENDING);
 
-                        adapter.updateData(results);
+                        adapter.updateData(results, today_year, today_month);
                         listView.setAdapter(adapter);
                         listView.setSelection(adapter.getCount() - 1);
                         month_show.setText(month_names[today_month-1]);
@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
                 .findAll()
                 .sort("date", Sort.ASCENDING);
 
-        adapter.updateData(results);
+        adapter.updateData(results, today_year, today_month);
         listView.setAdapter(adapter);
         listView.setSelection(adapter.getCount() - 1);
         month_show.setText(month_names[today_month-1]);
@@ -388,7 +388,7 @@ public class MainActivity extends AppCompatActivity {
                                 .findAll()
                                 .sort("date", Sort.ASCENDING);
 
-                        adapter.updateData(results);
+                        adapter.updateData(results, today_year, today_month);
                         listView.setAdapter(adapter);
                         listView.setSelection(adapter.getCount() - 1);
                         month_show.setText(month_names[today_month-1]);

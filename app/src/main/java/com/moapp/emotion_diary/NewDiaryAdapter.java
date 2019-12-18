@@ -34,6 +34,7 @@ public class NewDiaryAdapter extends BaseAdapter {
     private int[] temp;
     private String temp_content;
     private int deleted_position;
+    private Calendar cal;
 
     public NewDiaryAdapter(RealmResults<DiaryData> list, int iyear, int imonth, int iday) {
         mlist = list;
@@ -43,14 +44,21 @@ public class NewDiaryAdapter extends BaseAdapter {
         day = iday;
         Calendar mycal = new GregorianCalendar(year, month-1, day);
         maxdaysofMonth = mycal.getActualMaximum(Calendar.DAY_OF_MONTH);
-        Calendar cal = Calendar.getInstance();
+        cal = Calendar.getInstance();
         if (year==cal.get(Calendar.YEAR) && month == cal.get(Calendar.MONTH)+1) {
             maxdaysofMonth = cal.get(Calendar.DATE);
         }
-        con_list = new DiaryData[maxdaysofMonth];
-        initData(list);}
 
-    private void initData(RealmResults<DiaryData> list) {
+        initData(list, year, month);}
+
+    private void initData(RealmResults<DiaryData> list, int new_year, int new_month) {
+        year = new_year;
+        month = new_month;
+        if (year!=cal.get(Calendar.YEAR) || month != cal.get(Calendar.MONTH)+1) {
+            maxdaysofMonth = new GregorianCalendar(year, month-1, 1).getActualMaximum(Calendar.DAY_OF_MONTH);
+        }
+        con_list = new DiaryData[maxdaysofMonth];
+
         DiaryData dummy = new DiaryData();
         for(int i=0; i<maxdaysofMonth;i++) {
             con_list[i] = dummy;
@@ -60,8 +68,8 @@ public class NewDiaryAdapter extends BaseAdapter {
         }
     }
 
-    public void updateData(RealmResults<DiaryData> update_data) {
-        initData(update_data);
+    public void updateData(RealmResults<DiaryData> update_data, int new_year, int new_month) {
+        initData(update_data, new_year, new_month);
     }
 
     @Override
