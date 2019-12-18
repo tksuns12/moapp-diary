@@ -6,6 +6,26 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#8A4D16"
+        android:orientation="horizontal">
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/leftclick"
+            android:onClick="moveMonth"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_left"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="4"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
     <TextView
         android:id="@+id/year"
         android:layout_width="match_parent"
@@ -25,6 +45,16 @@
         android:background="#8A4D16"
         android:textColor="#fffff0"
         android:onClick="clickDatePickerMain"/>
+</LinearLayout>
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/rightclick"
+            android:layout_weight="1"
+            android:onClick="moveMonth"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_right"/>
+</LinearLayout>
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart"

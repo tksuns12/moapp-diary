@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.icu.util.Calendar;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
     private Toast closeToast;
     private ImageButton add_diary;
     private final String[] month_names = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
+    private Calendar calendar;
+    private ImageButton rightclick;
+    private ImageButton leftclick;
 
 
     @Override
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoadingActivity.class);
         startActivity(intent);
         setContentView(R.layout.activity_main);
-        Calendar calendar = Calendar.getInstance(); // 오늘 날짜 가져오기 위해 캘린더 인스턴스 생성
+        calendar = Calendar.getInstance(); // 오늘 날짜 가져오기 위해 캘린더 인스턴스 생성
         today_year = calendar.get(Calendar.YEAR); // 오늘 연도 가져오기
         today_month = calendar.get(Calendar.MONTH) + 1; //오늘 월 가져오기
         today_date = calendar.get(Calendar.DATE); // 오늘 일 가져오기
@@ -72,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         month_show.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Dense-Regular.otf"));
         year_show.setText(Integer.toString(today_year));
         month_show.setText(month_names[today_month-1]);
+        rightclick = findViewById(R.id.rightclick);
         //쓰기 버튼에 클릭리스너 할당
         //쓰기 버튼을 누르면 오늘 날짜를 인텐트에 담아 RWActivity로 넘겨주고 RWActivity를 불러옴
 
@@ -92,6 +97,17 @@ public class MainActivity extends AppCompatActivity {
         adapter = new NewDiaryAdapter(results, today_year, today_month, today_date);
 
         listView.setAdapter(adapter);
+
+        setChart(results);
+        if (today_year == calendar.get(Calendar.YEAR) && today_month == calendar.get(Calendar.MONTH) + 1) {
+            ImageButton rightclick = findViewById(R.id.rightclick);
+            rightclick.setVisibility(View.INVISIBLE);
+            rightclick.setEnabled(false);
+        } else {
+            ImageButton rightclick = findViewById(R.id.rightclick);
+            rightclick.setVisibility(View.VISIBLE);
+            rightclick.setEnabled(true);
+        }
         listView.setSelection(adapter.getCount() - 1);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -121,31 +137,13 @@ public class MainActivity extends AppCompatActivity {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
                                             adapter.removeItem(position);
-                                            RealmResults<DiaryData> results = realm.where(DiaryData.class)
-                                                    .equalTo("year", today_year)
-                                                    .equalTo("month", today_month)
-                                                    .findAll()
-                                                    .sort("date", Sort.ASCENDING);
-
-                                            adapter.updateData(results);
-                                            listView.setAdapter(adapter);
-                                            listView.setSelection(adapter.getCount() - 1);
-                                            setChart(results);
+                                            setMain();
 
                                             Snackbar snackbar = Snackbar.make(findViewById(R.id.diaryList), "일기가 삭제되었습니다.", Snackbar.LENGTH_LONG);
                                             snackbar.setAction("취소", new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    RealmResults<DiaryData> results = realm.where(DiaryData.class)
-                                                            .equalTo("year", today_year)
-                                                            .equalTo("month", today_month)
-                                                            .findAll()
-                                                            .sort("date", Sort.ASCENDING);
-                                                    adapter.restoreItem();
-                                                    listView.setAdapter(adapter);
-                                                    listView.setSelection(position);
-
-                                                    setChart(results);
+                                                    setMain();
                                                 }
                                             });
 
@@ -159,7 +157,32 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-        setChart(results);
+
+        listView.setOnTouchListener(new OnSwipeTouchListener(this) {
+            @Override
+            public void onSwipeLeft() {
+                super.onSwipeLeft();
+                if (today_month == 12) {
+                    if (today_year < calendar.get(Calendar.YEAR)) {
+                        today_month = 1;
+                        today_year += 1;
+                        setMain();
+                    }
+                } else {
+                    today_month += 1;
+                    setMain();
+                }
+
+            }
+
+            @Override
+            public void onSwipeRight() {
+                super.onSwipeRight();
+                today_month -= 1;
+                setMain();
+            }
+        });
+
 
 
     }
@@ -186,21 +209,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        RealmResults<DiaryData> results;
-        //오늘 연,월에 해당하는 모든 데이터를 찾아
-//        //날짜 기준, 오름차순으로 정렬
-        results = realm.where(DiaryData.class)
-                .equalTo("year", today_year)
-                .equalTo("month", today_month)
-                .findAll()
-                .sort("date", Sort.ASCENDING);
 
-
-        adapter.updateData(results);
-        //리사이클러뷰에 어댑터 선정
-        listView.setAdapter(adapter);
-        listView.setSelection(adapter.getCount() - 1);
-        setChart(results);
+        setMain();
     }
 
     public void clickDatePickerMain(View view) {
@@ -224,19 +234,7 @@ public class MainActivity extends AppCompatActivity {
             month_show.setText(month_names[month]);
             today_year = year;
             today_month = month+1;
-            //오늘 연,월에 해당하는 모든 데이터를 찾아
-            //날짜 기준, 오름차순으로 정렬
-            RealmResults<DiaryData> results;
-            results = realm.where(DiaryData.class)
-                    .equalTo("year", today_year)
-                    .equalTo("month", today_month)
-                    .findAll()
-                    .sort("date", Sort.ASCENDING);
-            NewDiaryAdapter adapter = new NewDiaryAdapter(results, today_year, today_month, today_date);
-            //리사이클러뷰에 어댑터 선정
-            listView.setAdapter(adapter);
-            listView.setSelection(adapter.getCount() - 1);
-            setChart(results);
+            setMain();
         }
     };
 
@@ -306,4 +304,50 @@ public class MainActivity extends AppCompatActivity {
         lineChart.animateY(2000);
 
 }
+
+    public void setMain() {
+        //오늘 연,월에 해당하는 모든 데이터를 찾아
+        //날짜 기준, 오름차순으로 정렬
+        RealmResults<DiaryData> results;
+        results = realm.where(DiaryData.class)
+                .equalTo("year", today_year)
+                .equalTo("month", today_month)
+                .findAll()
+                .sort("date", Sort.ASCENDING);
+
+
+        adapter.updateData(results);
+        //리사이클러뷰에 어댑터 선정
+        listView.setAdapter(adapter);
+        listView.setSelection(adapter.getCount() - 1);
+        month_show.setText(month_names[today_month-1]);
+        year_show.setText(Integer.toString(today_year));
+        setChart(results);
+        if (today_year == calendar.get(Calendar.YEAR) && today_month == calendar.get(Calendar.MONTH) + 1) {
+            rightclick.setEnabled(false);
+            rightclick.setVisibility(View.INVISIBLE);
+        } else {
+            rightclick.setVisibility(View.VISIBLE);
+            rightclick.setEnabled(true);
+        }
+
+
+        setChart(results);
+
+    }
+
+    public void moveMonth(View view) {
+        if (view.getId() == R.id.leftclick) {
+            today_month -= 1;
+            setMain();
+        } else {
+            if (today_month == 12) {
+                today_month = 1;
+                today_year += 1;
+            } else {
+                today_month += 1;
+            }
+            setMain();
+        }
+    }
 }
