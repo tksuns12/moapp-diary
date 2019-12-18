@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     private final String[] month_names = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
     private Calendar calendar;
     private ImageButton rightclick;
+    private Handler mHandler;
+    private Thread t;
 
 
     @Override
@@ -63,6 +65,42 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoadingActivity.class);
         startActivity(intent);
         //로딩화면 끝
+        //메인 화면 세팅하는 스레드
+        mHandler = new Handler();
+        t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        //오늘 연,월에 해당하는 모든 데이터를 찾아
+                        //날짜 기준, 오름차순으로 정렬
+                        RealmResults<DiaryData> results;
+                        results = realm.where(DiaryData.class)
+                                .equalTo("year", today_year)
+                                .equalTo("month", today_month)
+                                .findAll()
+                                .sort("date", Sort.ASCENDING);
+
+                        adapter.updateData(results);
+                        listView.setAdapter(adapter);
+                        listView.setSelection(adapter.getCount() - 1);
+                        month_show.setText(month_names[today_month-1]);
+                        year_show.setText(Integer.toString(today_year));
+
+                        if (today_year == calendar.get(Calendar.YEAR) && today_month == calendar.get(Calendar.MONTH) + 1) {
+                            rightclick.setEnabled(false);
+                            rightclick.setVisibility(View.INVISIBLE);
+                        } else {
+                            rightclick.setVisibility(View.VISIBLE);
+                            rightclick.setEnabled(true);
+                        }
+
+                        setChart(results);
+                    }
+                });
+            }
+        });
         setContentView(R.layout.activity_main); // 메인 액티비티 레이아웃 붙이기
         calendar = Calendar.getInstance(); // 오늘 날짜 가져오기 위해 캘린더 인스턴스 생성
         today_year = calendar.get(Calendar.YEAR); // 오늘 연도 가져오기
@@ -130,13 +168,13 @@ public class MainActivity extends AppCompatActivity {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
                                             adapter.removeItem(position);
-                                            setMain();
+                                            setMainThread();
 
                                             Snackbar snackbar = Snackbar.make(findViewById(R.id.diaryList), "일기가 삭제되었습니다.", Snackbar.LENGTH_LONG);
                                             snackbar.setAction("취소", new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    setMain();
+                                                    setMainThread();
                                                 }
                                             });
 
@@ -160,11 +198,11 @@ public class MainActivity extends AppCompatActivity {
                     if (today_year < calendar.get(Calendar.YEAR)) {
                         today_month = 1;
                         today_year += 1;
-                        setMain();
+                        setMainThread();
                     }
                 } else {
                     today_month += 1;
-                    setMain();
+                    setMainThread();
                 }
 
             }
@@ -177,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
                     today_year -= 1;
                 } else {
                 today_month -= 1;}
-                setMain();
+                setMainThread();
             }
         });
 
@@ -209,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        setMain();
+        setMainThread();
     }
 
 
@@ -234,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
             month_show.setText(month_names[month]);
             today_year = year;
             today_month = month+1;
-            setMain();
+            setMainThread();
         }
     };
 
@@ -334,6 +372,46 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void setMainThread(){
+
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        //오늘 연,월에 해당하는 모든 데이터를 찾아
+                        //날짜 기준, 오름차순으로 정렬
+                        RealmResults<DiaryData> results;
+                        results = realm.where(DiaryData.class)
+                                .equalTo("year", today_year)
+                                .equalTo("month", today_month)
+                                .findAll()
+                                .sort("date", Sort.ASCENDING);
+
+                        adapter.updateData(results);
+                        listView.setAdapter(adapter);
+                        listView.setSelection(adapter.getCount() - 1);
+                        month_show.setText(month_names[today_month-1]);
+                        year_show.setText(Integer.toString(today_year));
+
+                        if (today_year == calendar.get(Calendar.YEAR) && today_month == calendar.get(Calendar.MONTH) + 1) {
+                            rightclick.setEnabled(false);
+                            rightclick.setVisibility(View.INVISIBLE);
+                        } else {
+                            rightclick.setVisibility(View.VISIBLE);
+                            rightclick.setEnabled(true);
+                        }
+
+                        setChart(results);
+                    }
+                });
+            }
+        });
+        t.start();
+    }
+
     // 연월 표시 좌우 버튼을 누를 시 동작
     public void moveMonth(View view) {
         if (view.getId() == R.id.leftclick) {
@@ -341,13 +419,13 @@ public class MainActivity extends AppCompatActivity {
                 today_month = 12;
                 today_year -= 1;
             } else{today_month -= 1;}
-            setMain();
+            setMainThread();
         } else {
             if (today_month == 12) {
                 today_month = 1;
                 today_year += 1;
             } else {today_month += 1;}
-            setMain();
+            setMainThread();
         }
     }
 }

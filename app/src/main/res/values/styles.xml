@@ -23,4 +23,8 @@
         <item name="colorAccent">#8A4D16</item>
     </style>
 
+    <style name="MyProgressBarTheme" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="colorAccent">#E5E0C3</item>
+    </style>
+
 </resources>
