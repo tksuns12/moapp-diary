@@ -58,32 +58,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Realm.init(this);
-        //데이터 베이스 초기화, Realm은 앱 시작할 때 초기화를 반드시 해주어야 함.
-        //MainActivity 레이아웃 뷰 설정 전에 로딩 화면을 띄움
+        Realm.init(this); // DB 초기화
+        //로딩화면 불러옴
         Intent intent = new Intent(this, LoadingActivity.class);
         startActivity(intent);
-        setContentView(R.layout.activity_main);
+        //로딩화면 끝
+        setContentView(R.layout.activity_main); // 메인 액티비티 레이아웃 붙이기
         calendar = Calendar.getInstance(); // 오늘 날짜 가져오기 위해 캘린더 인스턴스 생성
         today_year = calendar.get(Calendar.YEAR); // 오늘 연도 가져오기
         today_month = calendar.get(Calendar.MONTH) + 1; //오늘 월 가져오기
         today_date = calendar.get(Calendar.DATE); // 오늘 일 가져오기
-        year_show = findViewById(R.id.year);
-        year_show.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Binggrae.ttf"));
-        month_show = findViewById(R.id.month);
-        month_show.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Dense-Regular.otf"));
-        year_show.setText(Integer.toString(today_year));
-        month_show.setText(month_names[today_month-1]);
-        rightclick = findViewById(R.id.rightclick);
-        //쓰기 버튼에 클릭리스너 할당
-        //쓰기 버튼을 누르면 오늘 날짜를 인텐트에 담아 RWActivity로 넘겨주고 RWActivity를 불러옴
-
-        //리사이클러뷰 할당
-        listView = findViewById(R.id.diaryList);
-        //데이터베이스 인스턴스 가져오기
-        realm = Realm.getDefaultInstance();
-        //탐색 결과 초기화
-        RealmResults<DiaryData> results;
+        year_show = findViewById(R.id.year); // 년도 표시 뷰
+        year_show.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Binggrae.ttf")); // 년도 글꼴 설정
+        month_show = findViewById(R.id.month); // 월 표시 뷰
+        month_show.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Dense-Regular.otf")); // 월 글꼴 설정
+        year_show.setText(Integer.toString(today_year)); // 년도 설정
+        month_show.setText(month_names[today_month-1]); // 월 설정
+        rightclick = findViewById(R.id.rightclick); // 오른쪽 화살표 버튼
+        listView = findViewById(R.id.diaryList); // 리스트뷰 불러오기
+        realm = Realm.getDefaultInstance(); // 데이터베이스 인스턴스 가져오기
+        RealmResults<DiaryData> results; //탐색 결과 초기화
         //오늘 연,월에 해당하는 모든 데이터를 찾아
         //날짜 기준, 오름차순으로 정렬
         results = realm.where(DiaryData.class)
@@ -91,12 +85,11 @@ public class MainActivity extends AppCompatActivity {
                 .equalTo("month", today_month)
                 .findAll()
                 .sort("date", Sort.ASCENDING);
-
-        adapter = new NewDiaryAdapter(results, today_year, today_month, today_date);
-
-        listView.setAdapter(adapter);
-
-        setChart(results);
+        //데이터 검색 끝
+        adapter = new NewDiaryAdapter(results, today_year, today_month, today_date); // 어댑터 생성
+        listView.setAdapter(adapter); // 리스트뷰에 어댑터 붙이기
+        setChart(results); // 그래프 그리기
+        // 지금 설정된 연,월이 현재의 연,월이면 오른쪽 화살표 버튼을 안 보이게 함.
         if (today_year == calendar.get(Calendar.YEAR) && today_month == calendar.get(Calendar.MONTH) + 1) {
             ImageButton rightclick = findViewById(R.id.rightclick);
             rightclick.setVisibility(View.INVISIBLE);
@@ -106,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
             rightclick.setVisibility(View.VISIBLE);
             rightclick.setEnabled(true);
         }
-        listView.setSelection(adapter.getCount() - 1);
+        listView.setSelection(adapter.getCount() - 1); // 리스트뷰를 가장 아래로 스크롤
+        // 리스트뷰에 onClick 리스너 설정
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -121,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        // 리스트뷰에 onLongClick 리스너 설정
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -156,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //리스트뷰에 스와이프리스너 설정
         listView.setOnTouchListener(new OnSwipeTouchListener(this) {
             @Override
             public void onSwipeLeft() {
@@ -189,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // 뒤로가기 눌렀을 때 바로 종료되지 않고 토스트 메세지 띄움
     @Override
     public void onBackPressed() {
         closeToast = Toast.makeText(this, "종료하려면 한 번 더 누르세요.", Toast.LENGTH_SHORT);
@@ -201,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
         mBackPressed = System.currentTimeMillis();
     }
 
+    // 프로그램이 닫힐 때 DB를 종료
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -211,9 +209,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         setMain();
     }
+
 
     public void clickDatePickerMain(View view) {
         //날짜를 클릭할 시 캘린더 대화창 띄움
@@ -256,13 +254,13 @@ public class MainActivity extends AppCompatActivity {
                     if (contentlist.get(i).getDate() == day) {
                         values.add(new Entry(day, contentlist.get(i).getEmotion()));
                         i++;
-                } else {
+                    } else {
                         values.add(new Entry(day, 0));
                     }
 
                 }
             }
-    }
+        }
 
         LineDataSet lineDataSet = new LineDataSet(values, "기분 점수");
         lineDataSet.setLineWidth(2);
@@ -307,6 +305,7 @@ public class MainActivity extends AppCompatActivity {
 
 }
 
+    // 메인 액티비티의 모든 뷰를 종합적으로 업데이트 하는 함수
     public void setMain() {
         //오늘 연,월에 해당하는 모든 데이터를 찾아
         //날짜 기준, 오름차순으로 정렬
@@ -317,9 +316,7 @@ public class MainActivity extends AppCompatActivity {
                 .findAll()
                 .sort("date", Sort.ASCENDING);
 
-
         adapter.updateData(results);
-        //리사이클러뷰에 어댑터 선정
         listView.setAdapter(adapter);
         listView.setSelection(adapter.getCount() - 1);
         month_show.setText(month_names[today_month-1]);
@@ -333,7 +330,6 @@ public class MainActivity extends AppCompatActivity {
             rightclick.setEnabled(true);
         }
 
-
         setChart(results);
 
     }
@@ -343,16 +339,13 @@ public class MainActivity extends AppCompatActivity {
             if(today_month == 1) {
                 today_month = 12;
                 today_year -= 1;
-            } else{
-            today_month -= 1;}
+            } else{today_month -= 1;}
             setMain();
         } else {
             if (today_month == 12) {
                 today_month = 1;
                 today_year += 1;
-            } else {
-                today_month += 1;
-            }
+            } else {today_month += 1;}
             setMain();
         }
     }
