@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
     private Calendar calendar;
     private ImageButton rightclick;
     private Handler mHandler;
-    private Thread t;
 
 
     @Override
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         //로딩화면 끝
         //메인 화면 세팅하는 스레드
         mHandler = new Handler();
-        t = new Thread(new Runnable() {
+        Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
                 mHandler.post(new Runnable() {
@@ -174,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
                                             snackbar.setAction("취소", new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
+                                                    adapter.restoreItem();
                                                     setMainThread();
                                                 }
                                             });
@@ -219,8 +219,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
+        t.start();
     }
 
     // 뒤로가기 눌렀을 때 바로 종료되지 않고 토스트 메세지 띄움
@@ -281,8 +280,7 @@ public class MainActivity extends AppCompatActivity {
         lineChart.invalidate();
         lineChart.clear();
 
-        List<DiaryData> contentlist = new ArrayList<>();
-        contentlist.addAll(realm.copyFromRealm(data));
+        List<DiaryData> contentlist = new ArrayList<>(realm.copyFromRealm(data));
         ArrayList<Entry> values = new ArrayList<>();
         if (contentlist.size() != 0) {
             for (int day = 1, i = 0; day < 32; day++) {
