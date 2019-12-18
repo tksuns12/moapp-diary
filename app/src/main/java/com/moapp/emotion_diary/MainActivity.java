@@ -321,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
         listView.setSelection(adapter.getCount() - 1);
         month_show.setText(month_names[today_month-1]);
         year_show.setText(Integer.toString(today_year));
-        setChart(results);
+
         if (today_year == calendar.get(Calendar.YEAR) && today_month == calendar.get(Calendar.MONTH) + 1) {
             rightclick.setEnabled(false);
             rightclick.setVisibility(View.INVISIBLE);
@@ -334,6 +334,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // 연월 표시 좌우 버튼을 누를 시 동작
     public void moveMonth(View view) {
         if (view.getId() == R.id.leftclick) {
             if(today_month == 1) {
