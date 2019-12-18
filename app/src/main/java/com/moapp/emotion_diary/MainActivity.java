@@ -50,11 +50,9 @@ public class MainActivity extends AppCompatActivity {
     NewDiaryAdapter adapter;
     private long mBackPressed;
     private Toast closeToast;
-    private ImageButton add_diary;
     private final String[] month_names = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
     private Calendar calendar;
     private ImageButton rightclick;
-    private ImageButton leftclick;
 
 
     @Override
@@ -178,7 +176,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSwipeRight() {
                 super.onSwipeRight();
-                today_month -= 1;
+                if (today_month == 1){
+                    today_month = 12;
+                    today_year -= 1;
+                } else {
+                today_month -= 1;}
                 setMain();
             }
         });
@@ -338,7 +340,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void moveMonth(View view) {
         if (view.getId() == R.id.leftclick) {
-            today_month -= 1;
+            if(today_month == 1) {
+                today_month = 12;
+                today_year -= 1;
+            } else{
+            today_month -= 1;}
             setMain();
         } else {
             if (today_month == 12) {
