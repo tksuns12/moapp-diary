@@ -239,7 +239,7 @@ public class RWActivity extends AppCompatActivity {
             }
         }
 
-        return emotion_count * 10 /total_word;
+        return emotion_count;
     }
 
 

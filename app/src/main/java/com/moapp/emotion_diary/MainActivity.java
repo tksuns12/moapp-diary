@@ -59,11 +59,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main); // 메인 액티비티 레이아웃 붙이기
         Realm.init(this); // DB 초기화
-        //로딩화면 불러옴
-        Intent intent = new Intent(this, LoadingActivity.class);
-        startActivity(intent);
-        //로딩화면 끝
         //메인 화면 세팅하는 스레드
         mHandler = new Handler();
         Thread t = new Thread(new Runnable() {
@@ -100,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
-        setContentView(R.layout.activity_main); // 메인 액티비티 레이아웃 붙이기
         calendar = Calendar.getInstance(); // 오늘 날짜 가져오기 위해 캘린더 인스턴스 생성
         today_year = calendar.get(Calendar.YEAR); // 오늘 연도 가져오기
         today_month = calendar.get(Calendar.MONTH) + 1; //오늘 월 가져오기

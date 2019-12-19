@@ -8,19 +8,19 @@
     android:id="@+id/loadingActivity"
     android:keepScreenOn="true">
 
-    <TextView
+    <ImageSwitcher
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="로딩 중입니다. 여기에 우리 초기화면 넣어주세요."
-        android:id="@+id/loadingText"/>
+        android:id="@+id/loadingView"/>
     <ProgressBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/progressBar"
-        app:layout_constraintTop_toTopOf="@+id/loadingText"
+        app:layout_constraintTop_toTopOf="@+id/loadingView"
         app:layout_constraintBottom_toBottomOf="parent"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_marginTop="300dp"/>
+        android:progressDrawable="@drawable/myprogressbar"
+        android:layout_marginTop="650dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
