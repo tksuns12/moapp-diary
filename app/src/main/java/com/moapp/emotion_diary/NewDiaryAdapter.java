@@ -54,7 +54,9 @@ public class NewDiaryAdapter extends BaseAdapter {
     private void initData(RealmResults<DiaryData> list, int new_year, int new_month) {
         year = new_year;
         month = new_month;
-        if (year!=cal.get(Calendar.YEAR) || month != cal.get(Calendar.MONTH)+1) {
+        if (year==cal.get(Calendar.YEAR) && month == cal.get(Calendar.MONTH)+1) {
+            maxdaysofMonth = cal.get(Calendar.DATE);
+        } else {
             maxdaysofMonth = new GregorianCalendar(year, month-1, 1).getActualMaximum(Calendar.DAY_OF_MONTH);
         }
         con_list = new DiaryData[maxdaysofMonth];

@@ -55,7 +55,6 @@ public class LoadingActivity extends Activity {
         imageSwitcher.setOutAnimation(this, android.R.anim.fade_out);
         pictures = new ArrayList<>();
         pictures.add(R.raw.tutorial0);
-        pictures.add(R.raw.tutorial1);
         pictures.add(R.raw.tutorial2);
         pictures.add(R.raw.tutorial3);
         pictures.add(R.raw.tutorial4);
@@ -76,9 +75,9 @@ public class LoadingActivity extends Activity {
                             public void run() {
                                 imageSwitcher.setImageResource(pictures.get(index));
                             }
-                        }, 1500);
+                        }, 3000);
                     }
-                    if (index == 7) {
+                    if (index == 6) {
                         index = 0;
                     }else{
                     index++;}

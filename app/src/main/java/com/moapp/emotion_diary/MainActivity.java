@@ -185,35 +185,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //리스트뷰에 스와이프리스너 설정
-        listView.setOnTouchListener(new OnSwipeTouchListener(this) {
-            @Override
-            public void onSwipeLeft() {
-                super.onSwipeLeft();
-                if (today_month == 12) {
-                    if (today_year < calendar.get(Calendar.YEAR)) {
-                        today_month = 1;
-                        today_year += 1;
-                        setMainThread();
-                    }
-                } else {
-                    today_month += 1;
-                    setMainThread();
-                }
-
-            }
-
-            @Override
-            public void onSwipeRight() {
-                super.onSwipeRight();
-                if (today_month == 1){
-                    today_month = 12;
-                    today_year -= 1;
-                } else {
-                today_month -= 1;}
-                setMainThread();
-            }
-        });
+//        //리스트뷰에 스와이프리스너 설정
+//        listView.setOnTouchListener(new OnSwipeTouchListener(this) {
+//            @Override
+//            public void onSwipeLeft() {
+//                super.onSwipeLeft();
+//                if (today_month == 12) {
+//                    if (today_year < calendar.get(Calendar.YEAR)) {
+//                        today_month = 1;
+//                        today_year += 1;
+//                        setMainThread();
+//                    }
+//                } else {
+//                    today_month += 1;
+//                    setMainThread();
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onSwipeRight() {
+//                super.onSwipeRight();
+//                if (today_month == 1){
+//                    today_month = 12;
+//                    today_year -= 1;
+//                } else {
+//                today_month -= 1;}
+//                setMainThread();
+//            }
+//        });
 
         t.start();
     }
